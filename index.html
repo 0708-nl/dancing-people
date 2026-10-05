@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17122c" />
+    <meta name="description" content="Enter the dance lobby, pick your character, and choose an emote." />
+    <title>ROUNDABOUT — Dance Lobby</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <main class="site-shell">
+      <header class="topbar">
+        <a class="wordmark" href="#" aria-label="Roundabout home"><span class="wordmark-icon"></span> ROUNDABOUT<span class="wordmark-period">.</span></a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-link is-current" href="#lobby">PLAY</a>
+          <a class="nav-link" href="#controls">LOCKER</a>
+          <a class="nav-link" href="#emotes">EMOTES <span class="nav-count">05</span></a>
+        </nav>
+        <div class="account-chip"><span class="account-avatar">R</span><span class="account-name">PLAYER ONE<small>LVL 01</small></span><span class="account-chevron">⌄</span></div>
+      </header>
+
+      <section class="hero lobby-layout" id="lobby" aria-labelledby="hero-title">
+        <aside class="party-panel">
+          <p class="eyebrow"><span>PARTY</span><span id="party-count">01 / 04</span></p>
+          <h1 id="hero-title">Ready to<br /><span>drop in?</span></h1>
+          <div class="party-card">
+            <span class="party-avatar">R</span>
+            <span class="party-player">PLAYER ONE<small>IN THE LOBBY</small></span>
+            <span class="party-indicator"></span>
+          </div>
+          <button class="invite-button" type="button"><span>＋</span> INVITE A FRIEND</button>
+          <div class="mode-card">
+            <span class="mode-icon">◈</span><span>GAME MODE<small id="mode-label">SOLO SHOWCASE</small></span><span class="mode-arrow">›</span>
+          </div>
+          <button class="ready-button" id="ready-toggle" type="button" aria-pressed="false"><span id="ready-label">READY UP</span><span class="ready-arrow">→</span></button>
+          <p class="queue-status" id="queue-status"><span class="status-dot"></span> YOUR STAGE IS WAITING</p>
+        </aside>
+
+        <div class="stage" aria-label="Interactive 3D spinning character">
+          <div class="stage-topline"><span><i class="live-dot"></i> DANCE LOBBY <span class="stage-separator">/</span> PLAYER PREVIEW</span><span class="stage-coordinates">REGION&nbsp; / &nbsp;SHOWCASE</span></div>
+          <div class="stage-aura"></div>
+          <div class="stage-grid"></div>
+          <div id="scene" class="scene">
+            <div class="loading-label"><span class="loading-dot"></span> WAKING HIM UP...</div>
+          </div>
+          <div class="stage-label"><span id="dancer-caption">01 — THE GUY</span><span>DRAG TO ROTATE ↗</span></div>
+          <span class="stage-index" id="stage-status">LOBBY</span>
+          <button class="quick-emote-button" id="quick-emote-toggle" type="button" aria-expanded="false" aria-controls="quick-emote-menu">EMOTE WHEEL <span>Q</span></button>
+          <div class="quick-emote-menu" id="quick-emote-menu" hidden role="group" aria-label="Quick emote selection">
+            <button type="button" data-quick-emote="groove">01 <span>LOWKEY GROOVE</span></button>
+            <button type="button" data-quick-emote="hype">02 <span>SKYLINE</span></button>
+            <button type="button" data-quick-emote="robot">03 <span>GLITCH STEP</span></button>
+            <button type="button" data-quick-emote="spin">04 <span>ORBIT BREAK</span></button>
+            <button type="button" data-quick-emote="side-step">05 <span>CROSSOVER</span></button>
+          </div>
+        </div>
+
+        <aside class="locker-panel" id="emotes">
+          <div class="locker-heading"><div><p class="eyebrow"><span>YOUR LOCKER</span></p><h2>Emotes <span>05</span></h2></div><span class="locker-symbol">✦</span></div>
+          <p class="locker-hint">PICK A MOVE TO PREVIEW</p>
+          <div class="emote-grid" role="group" aria-label="Choose a dance emote">
+            <button class="emote-button is-selected" type="button" data-emote="groove" aria-pressed="true"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M17 32V11l19-4v21M17 17l19-4"/><ellipse cx="12" cy="34" rx="5" ry="3.5" transform="rotate(-22 12 34)"/><ellipse cx="31" cy="30" rx="5" ry="3.5" transform="rotate(-22 31 30)"/><path d="M8 11c2-2 5-2 7 0M11 6c4-3 9-2 12 1"/></svg></span><span class="emote-copy"><span class="emote-name">LOWKEY GROOVE</span><span class="emote-rarity">SIGNATURE • LOOP</span></span><span class="emote-number">01</span></button>
+            <button class="emote-button" type="button" data-emote="hype" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 39V19m0 0-7 7m7-7 7 7M10 38h28M24 10V5m-4 7h8"/><path d="m11 17 3 2m23-2-3 2"/></svg></span><span class="emote-copy"><span class="emote-name">SKYLINE</span><span class="emote-rarity">SIGNATURE • HYPE</span></span><span class="emote-number">02</span></button>
+            <button class="emote-button" type="button" data-emote="robot" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M16 17h16l4 5v13H12V22l4-5Zm8 0v-6m-4 16h.1m8-.1h.1M19 35l-4 7m14-7 4 7M8 24H4m40 0h-4"/><path d="M18 24h4v4h-4zm8 0h4v4h-4z"/></svg></span><span class="emote-copy"><span class="emote-name">GLITCH STEP</span><span class="emote-rarity">SIGNATURE • MECH</span></span><span class="emote-number">03</span></button>
+            <button class="emote-button" type="button" data-emote="spin" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M35 18a14 14 0 0 0-24-5L8 16m0-8v8h8m-3 14a14 14 0 0 0 24 5l3-3m0 8v-8h-8"/><circle cx="24" cy="24" r="4"/><path d="M24 17v3m0 8v3m7-7h-3m-8 0h-3"/></svg></span><span class="emote-copy"><span class="emote-name">ORBIT BREAK</span><span class="emote-rarity">SIGNATURE • SPIN</span></span><span class="emote-number">04</span></button>
+            <button class="emote-button" type="button" data-emote="side-step" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M9 17h27l-6-6m6 6-6 6M39 31H12l6 6m-6-6 6-6"/><path d="m17 12-3 5 3 5m14 4 3 5-3 5"/></svg></span><span class="emote-copy"><span class="emote-name">CROSSOVER</span><span class="emote-rarity">SIGNATURE • FOOTWORK</span></span><span class="emote-number">05</span></button>
+          </div>
+          <div class="equipped-emote"><span class="equipped-check">✓</span><span>EQUIPPED EMOTE<small id="emote-caption">LOWKEY GROOVE</small></span></div>
+        </aside>
+      </section>
+
+      <section class="controls-section" id="controls">
+        <div class="character-choice" role="group" aria-label="Choose a dancer">
+          <span class="choice-label">OUTFIT</span>
+          <button class="choice-button is-selected" id="choose-man" type="button" aria-pressed="true">01 <span>THE GUY</span></button>
+          <button class="choice-button" id="choose-woman" type="button" aria-pressed="false">02 <span>THE WOMAN</span></button>
+        </div>
+        <div class="control-panel">
+          <div class="play-control">
+            <button class="play-button" id="play-toggle" type="button" aria-label="Pause emote">
+              <span class="pause-icon" aria-hidden="true"><i></i><i></i></span>
+              <span id="play-label">PAUSE EMOTE</span>
+            </button>
+            <span class="control-divider"></span>
+            <span class="control-hint">DANCE PREVIEW</span>
+          </div>
+          <div class="speed-control">
+            <div class="speed-label"><label for="speed">SPIN SPEED</label><span><strong id="speed-value">5.4</strong> <span class="speed-unit">×</span></span></div>
+            <div class="slider-wrap"><span class="speed-end">SLOW</span><input id="speed" type="range" min="0.25" max="7.5" step="0.05" value="5.4" aria-label="Spin speed" /><span class="speed-end">WHEEE</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="studio-panel" aria-label="Dance studio settings">
+        <div class="studio-heading"><span>STUDIO SETTINGS</span><span>LOCAL SHOWCASE</span></div>
+        <div class="studio-grid">
+          <label class="studio-field"><span>ARENA</span><select id="arena-select"><option value="neon">NEON DECK</option><option value="sunset">DUSK TERRACE</option><option value="ice">FROST STAGE</option></select></label>
+          <label class="studio-field"><span>BEAT / BPM <strong id="bpm-value">112</strong></span><input id="bpm" type="range" min="72" max="160" step="1" value="112" aria-label="Music tempo in beats per minute" /></label>
+          <label class="studio-field"><span>STAGE MIX</span><select id="track-select"><option value="pulse">NIGHT PULSE</option><option value="arcade">ARCADE RUN</option><option value="chill">AFTER HOURS</option></select></label>
+          <button class="studio-action" id="music-toggle" type="button" aria-pressed="false"><span class="music-indicator"></span><span id="music-label">START BEAT</span><small>GENERATED AUDIO</small></button>
+          <label class="studio-field artist-field"><span>ARTIST TAG</span><input id="artist-name" type="text" maxlength="16" value="PLAYER ONE" autocomplete="off" /></label>
+          <label class="studio-field color-field"><span>FIT COLOR</span><input id="fit-color" type="color" value="#63754f" aria-label="Outfit color" /></label>
+          <button class="studio-action" id="pose-toggle" type="button" aria-pressed="false">POSE MODE<small>PAUSE & ROTATE</small></button>
+          <button class="studio-action" id="party-toggle" type="button" aria-pressed="false">PARTY MODE<small>ADD DANCERS</small></button>
+        </div>
+        <p class="studio-note">Audio starts only when you press play. The dance, lights and beat follow your selected tempo.</p>
+      </section>
+
+      <footer class="footer">
+        <span>ROUNDABOUT SOCIAL LOBBY <span class="footer-online"><i class="live-dot"></i> ALL SYSTEMS LOCAL</span></span>
+        <span class="footer-center">PLAYER ONE <span>✦</span> LEVEL 01</span>
+        <a href="#lobby">BACK TO TOP ↑</a>
+      </footer>
+    </main>
+  </body>
+</html>
