@@ -7,6 +7,9 @@ const speedSlider = document.querySelector("#speed");
 const speedValue = document.querySelector("#speed-value");
 const manButton = document.querySelector("#choose-man");
 const womanButton = document.querySelector("#choose-woman");
+const skinButtons = document.querySelectorAll(".skin-button");
+const hatButtons = document.querySelectorAll(".hat-button");
+const emoteCount = document.querySelector("#emote-count");
 const dancerCaption = document.querySelector("#dancer-caption");
 const emoteCaption = document.querySelector("#emote-caption");
 const emoteButtons = document.querySelectorAll(".emote-button");
@@ -24,16 +27,46 @@ const trackSelect = document.querySelector("#track-select");
 const musicToggle = document.querySelector("#music-toggle");
 const musicLabel = document.querySelector("#music-label");
 const artistName = document.querySelector("#artist-name");
+const hairColor = document.querySelector("#hair-color");
 const fitColor = document.querySelector("#fit-color");
 const poseToggle = document.querySelector("#pose-toggle");
 const partyToggle = document.querySelector("#party-toggle");
 const partyCount = document.querySelector("#party-count");
 const modeLabel = document.querySelector("#mode-label");
+const storyAction = document.querySelector("#story-action");
+const storyChapter = document.querySelector("#story-chapter");
+const storyRivalLabel = document.querySelector("#story-rival-label");
+const storyOpponent = document.querySelector("#story-opponent");
+const storyDescription = document.querySelector("#story-description");
+const storyStatus = document.querySelector("#story-status");
+const battleDialogue = document.querySelector("#battle-dialogue");
+const dialogueSpeaker = document.querySelector("#dialogue-speaker");
+const dialogueLine = document.querySelector("#dialogue-line");
+const battleTurn = document.querySelector("#battle-turn");
+const storyProgress = document.querySelector("#story-progress");
+const storyProgressLabel = document.querySelector("#story-progress-label");
+const storyProgressFill = document.querySelector("#story-progress-fill");
+const battleHealth = document.querySelector("#battle-health");
+const battleAttacks = document.querySelector("#battle-attacks");
+const attackButtons = document.querySelectorAll(".attack-button");
+const playerHealthBar = document.querySelector("#player-health-bar");
+const rivalHealthBar = document.querySelector("#rival-health-bar");
+const playerHealthFill = document.querySelector("#player-health-fill");
+const rivalHealthFill = document.querySelector("#rival-health-fill");
+const playerHealthLabel = document.querySelector("#player-health-label");
+const rivalHealthLabel = document.querySelector("#rival-health-label");
+const rivalHealthName = document.querySelector("#rival-health-name");
+const playerStaminaBar = document.querySelector("#player-stamina-bar");
+const rivalStaminaBar = document.querySelector("#rival-stamina-bar");
+const playerStaminaFill = document.querySelector("#player-stamina-fill");
+const rivalStaminaFill = document.querySelector("#rival-stamina-fill");
+const playerStaminaLabel = document.querySelector("#player-stamina-label");
+const rivalStaminaLabel = document.querySelector("#rival-stamina-label");
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-camera.position.set(0, 2.15, 8.1);
-camera.lookAt(0, 1.65, 0);
+camera.position.set(0, 3, 8.1);
+camera.lookAt(0, 1.4, 0);
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -73,14 +106,189 @@ stageLights[1].position.set(3, 3.2, 0);
 stageLights[2].position.set(0, 4, -2.5);
 stageLights.forEach((light) => scene.add(light));
 
-const ground = new THREE.Mesh(
-  new THREE.CircleGeometry(1.22, 64),
-  new THREE.MeshStandardMaterial({ color: 0x778651, roughness: 0.88, metalness: 0.04, transparent: true, opacity: 0.16 })
+const meadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(24, 12),
+  new THREE.MeshStandardMaterial({ color: 0x596747, roughness: 1 })
 );
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = 0.018;
+meadow.rotation.x = -Math.PI / 2;
+meadow.position.set(0, -0.12, -4.2);
+meadow.receiveShadow = true;
+scene.add(meadow);
+
+const hillMaterial = new THREE.MeshStandardMaterial({ color: 0x65744b, roughness: 1 });
+for (const hill of [
+  { x: -4.5, y: -0.28, z: -4.1, sx: 3.4, sy: 0.75, sz: 1.45 },
+  { x: 2.8, y: -0.35, z: -4.6, sx: 4.1, sy: 0.9, sz: 1.65 }
+]) {
+  const mound = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 20),
+    hillMaterial
+  );
+  mound.position.set(hill.x, hill.y, hill.z);
+  mound.scale.set(hill.sx, hill.sy, hill.sz);
+  mound.receiveShadow = true;
+  scene.add(mound);
+}
+
+const treeTrunkMaterial = new THREE.MeshStandardMaterial({ color: 0x594432, roughness: 1 });
+const foliageMaterials = [
+  new THREE.MeshStandardMaterial({ color: 0x405b39, roughness: 1 }),
+  new THREE.MeshStandardMaterial({ color: 0x526b40, roughness: 1 }),
+  new THREE.MeshStandardMaterial({ color: 0x68764a, roughness: 1 })
+];
+function addTree(x, z, scale = 1) {
+  const tree = new THREE.Group();
+  tree.position.set(x, 0, z);
+  tree.scale.setScalar(scale);
+
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.2, 1.35, 9), treeTrunkMaterial);
+  trunk.position.y = 0.66;
+  trunk.castShadow = true;
+  tree.add(trunk);
+
+  const crownParts = [
+    { x: 0, y: 1.62, z: 0, sx: 0.76, sy: 0.79, sz: 0.67, material: 0 },
+    { x: -0.36, y: 1.43, z: 0.06, sx: 0.48, sy: 0.53, sz: 0.5, material: 1 },
+    { x: 0.37, y: 1.48, z: -0.04, sx: 0.5, sy: 0.57, sz: 0.48, material: 2 },
+    { x: 0.06, y: 2.02, z: -0.03, sx: 0.51, sy: 0.52, sz: 0.49, material: 1 }
+  ];
+  crownParts.forEach((part) => {
+    const crown = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 20, 16),
+      foliageMaterials[part.material]
+    );
+    crown.position.set(part.x, part.y, part.z);
+    crown.scale.set(part.sx, part.sy, part.sz);
+    crown.castShadow = true;
+    tree.add(crown);
+  });
+  scene.add(tree);
+}
+
+[
+  [-4.1, -2.7, 1.1],
+  [-2.9, -3.35, 0.82],
+  [3.05, -3.15, 0.9],
+  [4.2, -2.55, 1.12]
+].forEach(([x, z, scale]) => addTree(x, z, scale));
+
+const grassMaterials = [
+  new THREE.MeshStandardMaterial({ color: 0x78834d, roughness: 1 }),
+  new THREE.MeshStandardMaterial({ color: 0x92905a, roughness: 1 }),
+  new THREE.MeshStandardMaterial({ color: 0x566b3f, roughness: 1 })
+];
+for (const [x, z, scale] of [
+  [-4.6, -1.9, 1.1], [-3.7, -2.6, 0.8], [-2.25, -2.4, 0.7],
+  [-1.55, -3.25, 0.9], [1.75, -3.15, 0.85], [2.45, -2.25, 0.75],
+  [3.7, -2.1, 1], [4.65, -3.3, 0.9], [-3.2, -4.2, 1.2],
+  [0.9, -4.25, 1], [3.5, -4.1, 1.1]
+]) {
+  const tuft = new THREE.Group();
+  tuft.position.set(x, -0.1, z);
+  tuft.scale.setScalar(scale);
+  for (let blade = 0; blade < 7; blade += 1) {
+    const grassBlade = new THREE.Mesh(
+      new THREE.ConeGeometry(0.026, 0.2 + (blade % 3) * 0.045, 5),
+      grassMaterials[blade % grassMaterials.length]
+    );
+    grassBlade.position.set((blade - 3) * 0.035, 0.1, (blade % 2) * 0.035);
+    grassBlade.rotation.z = (blade - 3) * 0.1;
+    grassBlade.castShadow = true;
+    tuft.add(grassBlade);
+  }
+  scene.add(tuft);
+}
+
+const ground = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.62, 1.78, 0.18, 64),
+  new THREE.MeshStandardMaterial({ color: 0x7e5434, roughness: 0.94, metalness: 0.02 })
+);
+ground.position.y = 0.08;
 ground.receiveShadow = true;
 scene.add(ground);
+
+const road = new THREE.Mesh(
+  new THREE.BoxGeometry(8.6, 0.08, 3.4),
+  new THREE.MeshStandardMaterial({ color: 0x3b3a3e, roughness: 0.9, metalness: 0.18 })
+);
+road.position.set(0, -0.02, 3.55);
+road.receiveShadow = true;
+scene.add(road);
+
+for (const x of [-2.2, -1.1, 0, 1.1, 2.2]) {
+  const stripe = new THREE.Mesh(
+    new THREE.BoxGeometry(0.7, 0.01, 0.08),
+    new THREE.MeshStandardMaterial({ color: 0xf2e7a6, emissive: 0x4d4313, roughness: 0.7 })
+  );
+  stripe.position.set(x, 0.02, 3.55);
+  scene.add(stripe);
+}
+
+for (const z of [1.85, 5.25]) {
+  const edgeLine = new THREE.Mesh(
+    new THREE.BoxGeometry(8.1, 0.012, 0.035),
+    new THREE.MeshStandardMaterial({ color: 0xd5d1bd, roughness: 0.8 })
+  );
+  edgeLine.position.set(0, 0.03, z);
+  scene.add(edgeLine);
+}
+
+const cars = [];
+function addCar(positionX, scale = 1, direction = 1, color = 0xc9d2d8) {
+  const car = new THREE.Group();
+  car.position.set(positionX, 0.08, direction > 0 ? 2.6 : 4.5);
+  car.scale.setScalar(scale);
+
+  const body = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8, 0.26, 0.42),
+    new THREE.MeshStandardMaterial({ color, roughness: 0.65, metalness: 0.18 })
+  );
+  body.position.y = 0.18;
+  body.castShadow = true;
+  car.add(body);
+
+  const cabin = new THREE.Mesh(
+    new THREE.BoxGeometry(0.42, 0.2, 0.36),
+    new THREE.MeshStandardMaterial({ color: 0x46545a, roughness: 0.38, metalness: 0.22 })
+  );
+  cabin.position.set(0.08, 0.32, 0);
+  cabin.castShadow = true;
+  car.add(cabin);
+
+  const headlightMaterial = new THREE.MeshStandardMaterial({ color: 0xfff1c2, emissive: 0x55421b });
+  const tailLightMaterial = new THREE.MeshStandardMaterial({ color: 0xd94c3f, emissive: 0x40100b });
+  for (const side of [-1, 1]) {
+    const headlight = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), headlightMaterial);
+    headlight.position.set(0.39, 0.18, side * 0.15);
+    car.add(headlight);
+    const tailLight = new THREE.Mesh(new THREE.SphereGeometry(0.03, 10, 8), tailLightMaterial);
+    tailLight.position.set(-0.39, 0.18, side * 0.15);
+    car.add(tailLight);
+  }
+
+  for (const wheelX of [-0.24, 0.24]) {
+    for (const wheelZ of [-0.17, 0.17]) {
+      const wheel = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.07, 0.07, 0.06, 16),
+        new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 })
+      );
+      wheel.rotation.z = Math.PI / 2;
+      wheel.position.set(wheelX, 0.08, wheelZ);
+      car.add(wheel);
+    }
+  }
+
+  cars.push({ group: car, offset: positionX, speed: 0.32, direction });
+  scene.add(car);
+  return car;
+}
+
+[
+  [-2, 0.68, 1, 0x9c503d],
+  [-0.7, 0.74, -1, 0x527779],
+  [2, 0.8, 1, 0xb59a52],
+  [3.3, 0.7, -1, 0xd0c8b5]
+].forEach(([x, scale, direction, color]) => addCar(x, scale, direction, color));
 
 const character = new THREE.Group();
 character.scale.setScalar(1.12);
@@ -110,6 +318,13 @@ const garmentMaterials = {
   shirt: new THREE.MeshPhysicalMaterial({ color: 0xe9e2d5, roughness: 0.8, sheen: 0.1, sheenColor: 0xffffff, sheenRoughness: 0.82, side: THREE.DoubleSide }),
   detail: new THREE.MeshStandardMaterial({ color: 0x394732, roughness: 0.78, side: THREE.DoubleSide })
 };
+
+function setHairColor(colorHex) {
+  const base = new THREE.Color(colorHex);
+  materials.hair.color.copy(base);
+  materials.hairHighlight.color.copy(base.clone().offsetHSL(0, 0, 0.18));
+  if (hairColor) hairColor.value = `#${base.getHexString()}`;
+}
 
 function ellipsoid(parent, material, position, scale, segments = 32) {
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, segments, Math.max(16, Math.floor(segments * 0.75))), material);
@@ -339,6 +554,89 @@ const smileCurve = new THREE.CatmullRomCurve3([
 const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 12, 0.006, 8, false), materials.mouth);
 character.add(smile);
 
+const hatMaterials = {
+  cap: new THREE.MeshStandardMaterial({ color: 0xd5f263, roughness: 0.62 }),
+  beanie: new THREE.MeshStandardMaterial({ color: 0x63d9f5, roughness: 0.84 }),
+  crown: new THREE.MeshStandardMaterial({ color: 0xf5ce63, metalness: 0.62, roughness: 0.3 })
+};
+const hatGroups = new Map();
+const streetCap = new THREE.Group();
+streetCap.name = "hat-street-cap";
+streetCap.position.y = 2.65;
+const capBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.235, 0.235, 0.035, 32), hatMaterials.cap);
+capBrim.position.set(0, 0.005, 0.015);
+streetCap.add(capBrim);
+const capCrown = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 20), hatMaterials.cap);
+capCrown.position.set(0, 0.065, -0.015);
+capCrown.scale.set(0.205, 0.12, 0.19);
+streetCap.add(capCrown);
+const capPeak = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.025, 0.18), hatMaterials.cap);
+capPeak.position.set(0, -0.005, 0.17);
+streetCap.add(capPeak);
+hatGroups.set("street-cap", streetCap);
+character.add(streetCap);
+
+const grooveBeanie = new THREE.Group();
+grooveBeanie.name = "hat-groove-beanie";
+grooveBeanie.position.y = 2.65;
+const beanieBody = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 20), hatMaterials.beanie);
+beanieBody.position.y = 0.06;
+beanieBody.scale.set(0.215, 0.14, 0.205);
+grooveBeanie.add(beanieBody);
+const beanieCuff = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.215, 0.055, 32), hatMaterials.beanie);
+beanieCuff.position.y = 0.005;
+grooveBeanie.add(beanieCuff);
+hatGroups.set("groove-beanie", grooveBeanie);
+character.add(grooveBeanie);
+
+const circuitCrown = new THREE.Group();
+circuitCrown.name = "hat-circuit-crown";
+circuitCrown.position.y = 2.65;
+const crownBand = new THREE.Mesh(new THREE.TorusGeometry(0.195, 0.028, 10, 36), hatMaterials.crown);
+crownBand.rotation.x = Math.PI / 2;
+crownBand.position.y = 0.025;
+circuitCrown.add(crownBand);
+for (const [index, x] of [-0.14, -0.07, 0, 0.07, 0.14].entries()) {
+  const spike = new THREE.Mesh(new THREE.ConeGeometry(0.035, index === 2 ? 0.18 : 0.12, 8), hatMaterials.crown);
+  spike.position.set(x, index === 2 ? 0.12 : 0.09, 0);
+  circuitCrown.add(spike);
+}
+hatGroups.set("circuit-crown", circuitCrown);
+character.add(circuitCrown);
+hatGroups.forEach((hat) => { hat.visible = false; });
+
+const storyOpponents = [
+  { name: "NOVA “NEON”", description: "A rooftop regular with quick strikes. Defeat Nova to earn your first City Circuit win.", jacket: 0xb84768, pants: 0x30283f, hair: 0x17182d, skin: 0xb87862, female: true, health: 240, damage: 18, taunt: "Too slow! Watch this!", hitLine: "Ow! You got that one." },
+  { name: "BRICK “BASSLINE”", description: "A warehouse powerhouse who hits hard. Take Brick down to reach the final challenger.", jacket: 0x397b84, pants: 0x253b42, hair: 0x32241f, skin: 0x855b48, female: false, health: 275, damage: 24, taunt: "Feel the bass drop!", hitLine: "Didn't expect that move." },
+  { name: "ECHO “AFTERGLOW”", description: "The circuit champion has the strongest counterattack. Beat Echo to finish the story.", jacket: 0x9b7040, pants: 0x46344d, hair: 0x39223f, skin: 0xc68d6e, female: true, health: 310, damage: 29, taunt: "The spotlight's mine!", hitLine: "Okay, you're for real." }
+];
+const battleOpponent = character.clone(true);
+battleOpponent.name = "storyOpponent";
+battleOpponent.visible = false;
+battleOpponent.scale.setScalar(0.74);
+const rivalBaseMaterials = new Map([
+  [materials.jacket, "jacket"],
+  [garmentMaterials.jacket, "jacket"],
+  [materials.pants, "pants"],
+  [materials.hair, "hair"],
+  [materials.hairHighlight, "hair"],
+  [materials.skin, "skin"],
+  [materials.skinLight, "skin"]
+]);
+battleOpponent.traverse((child) => {
+  if (!child.isMesh) return;
+  const role = rivalBaseMaterials.get(child.material);
+  if (!role) return;
+  const originalMaterial = child.material;
+  child.material = originalMaterial.clone();
+  child.userData.storyMaterialRole = role;
+});
+scene.add(battleOpponent);
+const rivalLeftArm = battleOpponent.getObjectByName("leftArm");
+const rivalRightArm = battleOpponent.getObjectByName("rightArm");
+const rivalLeftLeg = battleOpponent.getObjectByName("leftLeg");
+const rivalRightLeg = battleOpponent.getObjectByName("rightLeg");
+
 const partyDancers = [];
 let partyMode = false;
 function setPartyMode(enabled) {
@@ -371,6 +669,10 @@ shadow.rotation.x = -Math.PI / 2;
 shadow.position.y = 0.025;
 shadow.scale.set(1.4, 0.72, 1);
 scene.add(shadow);
+const rivalShadow = shadow.clone();
+rivalShadow.visible = false;
+rivalShadow.position.x = 1.05;
+scene.add(rivalShadow);
 
 let speed = Number(speedSlider.value);
 let playing = true;
@@ -381,6 +683,24 @@ let womanSelected = false;
 let selectedEmote = "groove";
 let poseMode = false;
 let playingBeforePose = true;
+let storyState = "ready";
+let campaignWins = 0;
+const playerMaximumHealth = 240;
+const maximumStamina = 100;
+const staminaRecovery = 30;
+let playerHealth = playerMaximumHealth;
+let rivalHealth = 240;
+let playerStamina = maximumStamina;
+let rivalStamina = maximumStamina;
+let battleTurnTimer;
+let playerLunge = 0;
+let rivalLunge = 0;
+let selectedSkin = "original";
+const unlockStorageKey = "roundabout-story-unlocks-v1";
+const unlockedEmotes = new Set(["groove", "hype", "robot", "spin", "side-step", ...loadUnlocks("emotes")]);
+const unlockedSkins = new Set(["original", ...loadUnlocks("skins")]);
+const unlockedHats = new Set(loadUnlocks("hats"));
+let selectedHat = null;
 let musicContext;
 let beatTimer;
 const clock = new THREE.Clock();
@@ -389,8 +709,312 @@ const emotes = {
   hype: { label: "SKYLINE", beat: 2.7, spin: 0.12, bounce: 0.09, arms: 0.32, legs: 0.3, sway: 0.04 },
   robot: { label: "GLITCH STEP", beat: 2.4, spin: 0.08, bounce: 0.018, arms: 0.32, legs: 0.18, sway: 0.01 },
   spin: { label: "ORBIT BREAK", beat: 1.8, spin: 1.8, bounce: 0.05, arms: 0.18, legs: 0.16, sway: 0.035 },
-  "side-step": { label: "CROSSOVER", beat: 2.4, spin: 0.08, bounce: 0.035, arms: 0.22, legs: 0.38, sway: 0.09 }
+  "side-step": { label: "CROSSOVER", beat: 2.4, spin: 0.08, bounce: 0.035, arms: 0.22, legs: 0.38, sway: 0.09 },
+  moonwalk: { label: "MOONWALK", beat: 1.8, spin: 0.02, bounce: 0.012, arms: 0.16, legs: 0.48, sway: 0.025 },
+  "power-pose": { label: "POWER POSE", beat: 1.6, spin: 0.04, bounce: 0.055, arms: 0.2, legs: 0.12, sway: 0.018 }
 };
+
+function loadUnlocks(key) {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(unlockStorageKey) || "{}");
+    return Array.isArray(saved[key]) ? saved[key].filter((id) => typeof id === "string") : [];
+  } catch (error) {
+    console.error("Unable to load saved story unlocks:", error);
+    return [];
+  }
+}
+
+function saveUnlocks() {
+  try {
+    window.localStorage.setItem(unlockStorageKey, JSON.stringify({
+      emotes: [...unlockedEmotes],
+      skins: [...unlockedSkins],
+      hats: [...unlockedHats]
+    }));
+  } catch (error) {
+    console.error("Unable to save story unlocks:", error);
+  }
+}
+
+function updateUnlockControls() {
+  let emoteUnlockedCount = 0;
+  emoteButtons.forEach((button) => {
+    const id = button.dataset.emote;
+    const isUnlocked = unlockedEmotes.has(id);
+    button.disabled = !isUnlocked;
+    button.classList.toggle("is-locked", !isUnlocked);
+    if (isUnlocked) emoteUnlockedCount += 1;
+    button.querySelector(".emote-lock")?.toggleAttribute("hidden", isUnlocked);
+  });
+  emoteCount.textContent = `${emoteUnlockedCount} / ${emoteButtons.length}`;
+  skinButtons.forEach((button) => {
+    const isUnlocked = unlockedSkins.has(button.dataset.skin);
+    button.disabled = !isUnlocked;
+    button.classList.toggle("is-locked", !isUnlocked);
+    button.querySelector(".skin-lock")?.toggleAttribute("hidden", isUnlocked);
+  });
+  hatButtons.forEach((button) => {
+    const isUnlocked = unlockedHats.has(button.dataset.hat);
+    button.disabled = !isUnlocked;
+    button.classList.toggle("is-locked", !isUnlocked);
+    button.classList.toggle("is-selected", selectedHat === button.dataset.hat);
+    button.setAttribute("aria-pressed", String(selectedHat === button.dataset.hat));
+    button.querySelector(".hat-lock")?.toggleAttribute("hidden", isUnlocked);
+  });
+  document.querySelectorAll("[data-quick-emote]").forEach((button) => {
+    button.disabled = !unlockedEmotes.has(button.dataset.quickEmote);
+  });
+}
+
+updateUnlockControls();
+
+function updateCampaignProgress() {
+  const progress = Math.round((campaignWins / storyOpponents.length) * 100);
+  storyProgress.setAttribute("aria-valuenow", String(campaignWins));
+  storyProgressLabel.textContent = `${campaignWins} / ${storyOpponents.length} WINS`;
+  storyProgressFill.style.width = `${progress}%`;
+}
+
+function unlockCampaignRewards() {
+  const newlyUnlocked = [];
+  const rewards = [
+    { wins: 1, emote: "moonwalk", skin: "neon", hat: "street-cap", label: "Neon Flare outfit, Moonwalk emote, and Street Cap" },
+    { wins: 2, skin: "wild", hat: "groove-beanie", label: "Wildside outfit and Groove Beanie" },
+    { wins: 3, emote: "power-pose", skin: "champion", hat: "circuit-crown", label: "Circuit Champ outfit, Power Pose emote, and Circuit Crown" }
+  ];
+  rewards.forEach((reward) => {
+    if (campaignWins < reward.wins) return;
+    let unlocked = false;
+    if (reward.emote && !unlockedEmotes.has(reward.emote)) {
+      unlockedEmotes.add(reward.emote);
+      unlocked = true;
+    }
+    if (reward.skin && !unlockedSkins.has(reward.skin)) {
+      unlockedSkins.add(reward.skin);
+      unlocked = true;
+    }
+    if (reward.hat && !unlockedHats.has(reward.hat)) {
+      unlockedHats.add(reward.hat);
+      unlocked = true;
+    }
+    if (unlocked) newlyUnlocked.push(reward.label);
+  });
+  if (newlyUnlocked.length) {
+    updateUnlockControls();
+    saveUnlocks();
+  }
+  return newlyUnlocked;
+}
+
+function updateBattleHealthBars() {
+  const rivalMaximumHealth = storyOpponents[campaignWins].health;
+  playerHealthFill.style.width = `${(playerHealth / playerMaximumHealth) * 100}%`;
+  rivalHealthFill.style.width = `${(rivalHealth / rivalMaximumHealth) * 100}%`;
+  playerHealthFill.style.background = `hsl(${(playerHealth / playerMaximumHealth) * 120} 72% 48%)`;
+  rivalHealthFill.style.background = `hsl(${(rivalHealth / rivalMaximumHealth) * 120} 72% 48%)`;
+  playerHealthLabel.textContent = `${playerHealth} / ${playerMaximumHealth} HP`;
+  rivalHealthLabel.textContent = `${rivalHealth} / ${rivalMaximumHealth} HP`;
+  playerHealthBar.setAttribute("aria-valuemax", String(playerMaximumHealth));
+  playerHealthBar.setAttribute("aria-valuenow", String(playerHealth));
+  rivalHealthBar.setAttribute("aria-valuemax", String(rivalMaximumHealth));
+  rivalHealthBar.setAttribute("aria-valuenow", String(rivalHealth));
+  playerStaminaFill.style.width = `${playerStamina}%`;
+  rivalStaminaFill.style.width = `${rivalStamina}%`;
+  playerStaminaLabel.textContent = `${playerStamina} / ${maximumStamina} STA`;
+  rivalStaminaLabel.textContent = `${rivalStamina} / ${maximumStamina} STA`;
+  playerStaminaBar.setAttribute("aria-valuenow", String(playerStamina));
+  rivalStaminaBar.setAttribute("aria-valuenow", String(rivalStamina));
+}
+
+function updateAttackAvailability() {
+  attackButtons.forEach((button) => {
+    const staminaCost = Number(button.dataset.stamina);
+    button.disabled = storyState !== "active" || playerStamina < staminaCost;
+    button.title = playerStamina < staminaCost
+      ? `Need ${staminaCost} stamina; you have ${playerStamina}.`
+      : "";
+  });
+}
+
+function setStoryOpponentAppearance(index) {
+  const opponent = storyOpponents[index];
+  storyOpponent.textContent = opponent.name;
+  storyDescription.textContent = opponent.description;
+  rivalHealthName.textContent = opponent.name.split(" ")[0];
+  battleOpponent.traverse((child) => {
+    if (!child.isMesh) return;
+    const role = child.userData.storyMaterialRole;
+    if (role === "jacket") child.material.color.setHex(opponent.jacket);
+    if (role === "pants") child.material.color.setHex(opponent.pants);
+    if (role === "hair") child.material.color.setHex(opponent.hair);
+    if (role === "skin") child.material.color.setHex(opponent.skin);
+    if (child.name === "skirt" || child.name === "skirtHem") child.visible = opponent.female;
+    if (child.name === "longHair") child.visible = opponent.female;
+    if (child.name === "shortHair") child.visible = !opponent.female;
+  });
+}
+
+function setBattleDialogue(speaker, line) {
+  dialogueSpeaker.textContent = speaker;
+  dialogueLine.textContent = `“${line}”`;
+  battleDialogue.hidden = false;
+}
+
+function beginStoryBattle(index) {
+  if (partyMode) {
+    setPartyMode(false);
+    partyToggle.setAttribute("aria-pressed", "false");
+    partyToggle.classList.remove("is-active");
+    partyToggle.querySelector("small").textContent = "ADD DANCERS";
+    partyCount.textContent = "01 / 04";
+    modeLabel.textContent = "SOLO SHOWCASE";
+  }
+  if (battleTurnTimer) {
+    window.clearTimeout(battleTurnTimer);
+    battleTurnTimer = undefined;
+  }
+  storyState = "active";
+  playerHealth = playerMaximumHealth;
+  rivalHealth = storyOpponents[index].health;
+  playerStamina = maximumStamina;
+  rivalStamina = maximumStamina;
+  updateBattleHealthBars();
+  updateAttackAvailability();
+  updateCampaignProgress();
+  setStoryOpponentAppearance(index);
+  storyChapter.textContent = `BATTLE ${index + 1} / ${storyOpponents.length}`;
+  storyRivalLabel.textContent = "CURRENT OPPONENT";
+  storyStatus.textContent = `Battle ${storyOpponents[index].name}. Stronger attacks cost more stamina; both fighters recover stamina each round.`;
+  setBattleDialogue(storyOpponents[index].name, "You made it this far. Let's see what you've got!");
+  battleTurn.textContent = "YOUR TURN — CHOOSE AN ATTACK";
+  battleTurn.hidden = false;
+  storyAction.textContent = "YOUR TURN";
+  storyAction.disabled = true;
+  battleHealth.hidden = false;
+  battleAttacks.hidden = false;
+
+  character.scale.setScalar(0.74);
+  character.position.x = -1.05;
+  battleOpponent.position.set(1.05, 0, 0);
+  battleOpponent.visible = true;
+  battleOpponent.rotation.y = -0.35;
+  targetRotation = 0.35;
+  shadow.position.x = -1.05;
+  rivalShadow.visible = true;
+}
+
+function finishStoryBattle(won) {
+  battleAttacks.hidden = true;
+  battleTurn.hidden = true;
+  storyAction.disabled = false;
+  if (!won) {
+    storyState = "lost";
+    storyRivalLabel.textContent = "KNOCKED OUT";
+    storyChapter.textContent = `BATTLE ${campaignWins + 1} LOST`;
+    storyStatus.textContent = `${storyOpponents[campaignWins].name} knocked you out. Recover and try the battle again.`;
+    setBattleDialogue(storyOpponents[campaignWins].name, "That's enough. Come back when you're ready.");
+    storyAction.textContent = "RETRY BATTLE";
+    return;
+  }
+
+  setBattleDialogue("YOU", "That's the City Circuit style!");
+  campaignWins += 1;
+  updateCampaignProgress();
+  const rewards = unlockCampaignRewards();
+  if (campaignWins === storyOpponents.length) {
+    storyState = "complete";
+    storyRivalLabel.textContent = "CHAMPION";
+    storyChapter.textContent = "CIRCUIT CLEARED";
+    storyStatus.textContent = "You defeated every challenger and cleared the City Circuit!";
+    setBattleDialogue("ECHO “AFTERGLOW”", "You earned that win. The circuit is yours.");
+    storyAction.textContent = "REPLAY STORY";
+  } else {
+    storyState = "won";
+    storyRivalLabel.textContent = "NEXT CHALLENGER";
+    storyChapter.textContent = `BATTLE ${campaignWins} / ${storyOpponents.length} WON`;
+    storyStatus.textContent = `You knocked out ${storyOpponents[campaignWins - 1].name}! The next challenger is waiting.`;
+    storyAction.textContent = "NEXT CHALLENGER";
+  }
+  if (rewards.length) storyStatus.textContent += ` Reward unlocked: ${rewards.join("; ")}.`;
+}
+
+function performAttack(button) {
+  if (storyState !== "active") return;
+  const damage = Number(button.dataset.damage);
+  const staminaCost = Number(button.dataset.stamina);
+  if (playerStamina < staminaCost) return;
+  const attackName = button.dataset.attack;
+  const opponent = storyOpponents[campaignWins];
+  playerStamina -= staminaCost;
+  attackButtons.forEach((attackButton) => { attackButton.disabled = true; });
+  storyState = "countering";
+  battleTurn.textContent = `${opponent.name} IS COUNTERING...`;
+  storyAction.textContent = "RIVAL'S TURN";
+  rivalHealth = Math.max(0, rivalHealth - damage);
+  playerLunge = 1;
+  updateBattleHealthBars();
+  storyStatus.textContent = `${attackName} dealt ${damage} damage.`;
+  setBattleDialogue("YOU", `Take that! ${attackName}!`);
+
+  if (rivalHealth === 0) {
+    storyStatus.textContent = `${opponent.name} is down! You dealt the final ${damage} damage.`;
+    setBattleDialogue(opponent.name, opponent.hitLine);
+    battleTurnTimer = window.setTimeout(() => finishStoryBattle(true), 750);
+    return;
+  }
+
+  setBattleDialogue(opponent.name, opponent.taunt);
+  battleTurnTimer = window.setTimeout(() => {
+    if (storyState !== "countering") return;
+    const rivalAttack = [
+      { name: "Finisher", damage: opponent.damage + 18, stamina: 70 },
+      { name: "Power Hit", damage: opponent.damage + 10, stamina: 40 },
+      { name: "Quick Strike", damage: opponent.damage, stamina: 15 }
+    ].find((attack) => rivalStamina >= attack.stamina);
+    rivalStamina -= rivalAttack.stamina;
+    const counterDamage = rivalAttack.damage;
+    playerHealth = Math.max(0, playerHealth - counterDamage);
+    rivalLunge = 1;
+    storyStatus.textContent = `${opponent.name} used ${rivalAttack.name} for ${counterDamage} damage.`;
+    setBattleDialogue(opponent.name, `${opponent.taunt} ${rivalAttack.name}!`);
+    updateBattleHealthBars();
+
+    if (playerHealth === 0) {
+      storyStatus.textContent = `${opponent.name} knocked you out with ${counterDamage} damage.`;
+      setBattleDialogue(opponent.name, "That's enough. Come back when you're ready.");
+      finishStoryBattle(false);
+      return;
+    }
+
+    playerStamina = Math.min(maximumStamina, playerStamina + staminaRecovery);
+    rivalStamina = Math.min(maximumStamina, rivalStamina + staminaRecovery);
+    updateBattleHealthBars();
+    storyState = "active";
+    battleTurn.textContent = "YOUR TURN — CHOOSE AN ATTACK";
+    storyAction.textContent = "YOUR TURN";
+    updateAttackAvailability();
+  }, 900);
+}
+
+attackButtons.forEach((button) => {
+  button.addEventListener("click", () => performAttack(button));
+});
+
+storyAction.addEventListener("click", () => {
+  if (storyState === "won") {
+    beginStoryBattle(campaignWins);
+    return;
+  }
+  if (storyState === "lost") {
+    beginStoryBattle(campaignWins);
+    return;
+  }
+  if (storyState === "complete") {
+    campaignWins = 0;
+    updateCampaignProgress();
+  }
+  beginStoryBattle(campaignWins);
+});
 
 function resize() {
   const { width, height } = mount.getBoundingClientRect();
@@ -448,6 +1072,7 @@ function chooseDancer(isWoman) {
   materials.pants.color.setHex(isWoman ? 0x45323b : 0x283334);
   materials.skirt.color.setHex(isWoman ? 0x604b62 : 0x665064);
   ground.material.color.setHex(isWoman ? 0xf08a72 : 0xc5e65a);
+  applySkin(selectedSkin);
   if (fitColor) fitColor.value = `#${materials.jacket.color.getHexString()}`;
   partyDancers.forEach(({ group }) => {
     group.traverse((child) => {
@@ -461,8 +1086,64 @@ function chooseDancer(isWoman) {
   });
 }
 
+const skinPalettes = {
+  original: {
+    man: [0x63754f, 0x283334, 0x665064, 0x30251e, 0xd5f263],
+    woman: [0x647c86, 0x45323b, 0x604b62, 0x30251e, 0xd5f263]
+  },
+  neon: {
+    man: [0xc13d68, 0x342640, 0x84405f, 0x20162d, 0xffd04a],
+    woman: [0xe15c78, 0x422b49, 0x9c4e75, 0x20162d, 0x6ef2e4]
+  },
+  wild: {
+    man: [0x3f8b5b, 0x46362b, 0x927044, 0x38271a, 0xf4bd57],
+    woman: [0x579e6b, 0x493840, 0xa57949, 0x38271a, 0xff8e62]
+  },
+  champion: {
+    man: [0x6d56b8, 0x272a47, 0xa17c38, 0x1d1b34, 0x69e6f4],
+    woman: [0x8a63cf, 0x392b53, 0xc39649, 0x1d1b34, 0xffd95b]
+  }
+};
+
+function applySkin(skinId) {
+  const palette = skinPalettes[skinId];
+  if (!palette) return;
+  const [jacket, pants, skirtColor, hair, accent] = womanSelected ? palette.woman : palette.man;
+  materials.jacket.color.setHex(jacket);
+  garmentMaterials.jacket.color.setHex(jacket);
+  materials.pants.color.setHex(pants);
+  materials.skirt.color.setHex(skirtColor);
+  materials.accent.color.setHex(accent);
+  setHairColor(`#${hair.toString(16).padStart(6, "0")}`);
+  if (fitColor) fitColor.value = `#${jacket.toString(16).padStart(6, "0")}`;
+}
+
+function selectSkin(skinId) {
+  if (!unlockedSkins.has(skinId) || !skinPalettes[skinId]) return;
+  selectedSkin = skinId;
+  applySkin(skinId);
+  skinButtons.forEach((button) => {
+    const isSelected = button.dataset.skin === skinId;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+}
+
+function selectHat(hatId) {
+  if (!unlockedHats.has(hatId) || !hatGroups.has(hatId)) return;
+  selectedHat = hatId;
+  hatGroups.forEach((hat, id) => { hat.visible = id === hatId; });
+  partyDancers.forEach(({ group }) => {
+    hatGroups.forEach((hat, id) => {
+      const partyHat = group.getObjectByName(hat.name);
+      if (partyHat) partyHat.visible = id === hatId;
+    });
+  });
+  updateUnlockControls();
+}
+
 function selectEmote(emoteId) {
-  if (!emotes[emoteId]) return;
+  if (!emotes[emoteId] || !unlockedEmotes.has(emoteId)) return;
   selectedEmote = emoteId;
   emoteButtons.forEach((button) => {
     const isSelected = button.dataset.emote === emoteId;
@@ -477,6 +1158,12 @@ function selectEmote(emoteId) {
 
 manButton.addEventListener("click", () => chooseDancer(false));
 womanButton.addEventListener("click", () => chooseDancer(true));
+skinButtons.forEach((button) => {
+  button.addEventListener("click", () => selectSkin(button.dataset.skin));
+});
+hatButtons.forEach((button) => {
+  button.addEventListener("click", () => selectHat(button.dataset.hat));
+});
 emoteButtons.forEach((button) => {
   button.addEventListener("click", () => selectEmote(button.dataset.emote));
 });
@@ -519,12 +1206,13 @@ speedSlider.addEventListener("input", () => {
 
 arenaSelect.addEventListener("change", () => {
   const arenas = {
-    neon: { floor: 0x778651, lights: [0x62d9f5, 0xf5ce63, 0xa36eff] },
-    sunset: { floor: 0xb87955, lights: [0xff9b68, 0xffd36b, 0xe86d8e] },
-    ice: { floor: 0x547c91, lights: [0x73ddff, 0xa5bdff, 0x8cf2da] }
+    neon: { floor: 0x7e5434, lights: [0x62d9f5, 0xf5ce63, 0xa36eff], road: 0x2d2f35 },
+    sunset: { floor: 0x8a5f3f, lights: [0xff9b68, 0xffd36b, 0xe86d8e], road: 0x342a29 },
+    ice: { floor: 0x7b6a5c, lights: [0x73ddff, 0xa5bdff, 0x8cf2da], road: 0x313f45 }
   };
   const arena = arenas[arenaSelect.value];
   ground.material.color.setHex(arena.floor);
+  road.material.color.setHex(arena.road);
   stageLights.forEach((light, index) => light.color.setHex(arena.lights[index]));
   stage.dataset.arena = arenaSelect.value;
 });
@@ -594,7 +1282,16 @@ artistName.addEventListener("input", () => {
   });
 });
 
+hairColor?.addEventListener("input", () => {
+  setHairColor(hairColor.value);
+});
+
 fitColor.addEventListener("input", () => {
+  selectedSkin = "custom";
+  skinButtons.forEach((button) => {
+    button.classList.remove("is-selected");
+    button.setAttribute("aria-pressed", "false");
+  });
   materials.jacket.color.set(fitColor.value);
   garmentMaterials.jacket.color.set(fitColor.value);
   materials.skirt.color.set(fitColor.value);
@@ -636,43 +1333,61 @@ function render() {
   requestAnimationFrame(render);
   const delta = Math.min(clock.getDelta(), 0.05);
   const emote = emotes[selectedEmote];
+  cars.forEach(({ group, offset, speed: carSpeed, direction }) => {
+    const roadSpan = 7.6;
+    const travel = (clock.elapsedTime * carSpeed * 2.3 * direction + offset + roadSpan / 2) % roadSpan;
+    const x = ((travel + roadSpan) % roadSpan) - roadSpan / 2;
+    group.position.x = x;
+    group.rotation.y = direction > 0 ? 0 : Math.PI;
+  });
+  playerLunge = Math.max(0, playerLunge - delta * 6);
+  rivalLunge = Math.max(0, rivalLunge - delta * 6);
+  const isDancing = playing && !battleOpponent.visible;
   const rawBeat = clock.elapsedTime * speed * emote.beat * (Number(bpmSlider.value) / 112);
   const danceBeat = selectedEmote === "robot" ? Math.floor(rawBeat * 2) / 2 : rawBeat;
-  if (playing && !dragging) targetRotation += delta * speed * emote.spin;
+  if (isDancing && !dragging) targetRotation += delta * speed * emote.spin;
   character.rotation.y += (targetRotation - character.rotation.y) * Math.min(delta * 8, 1);
-  character.position.y = playing ? Math.abs(Math.sin(danceBeat)) * emote.bounce : 0;
-  character.position.x = playing && selectedEmote === "side-step" ? Math.sin(danceBeat) * 0.12 : 0;
-  character.rotation.z = playing ? Math.sin(danceBeat / 2) * emote.sway : 0;
+  character.position.y = isDancing ? Math.abs(Math.sin(danceBeat)) * emote.bounce : 0;
+  const emoteSlide = isDancing && selectedEmote === "side-step"
+    ? Math.sin(danceBeat) * 0.12
+    : isDancing && selectedEmote === "moonwalk"
+      ? Math.sin(danceBeat * 0.5) * 0.24
+      : 0;
+  character.position.x = (battleOpponent.visible ? -1.05 + playerLunge * 0.28 : 0) + emoteSlide;
+  character.rotation.z = isDancing ? Math.sin(danceBeat / 2) * emote.sway : 0;
   const leftBeat = Math.sin(danceBeat);
   const rightBeat = Math.sin(danceBeat + 0.8);
-  leftArm.rotation.z = playing ? -0.12 + leftBeat * emote.arms : 0;
-  rightArm.rotation.z = playing ? 0.12 - rightBeat * emote.arms : 0;
-  leftArm.rotation.x = playing ? Math.sin(danceBeat * 0.5 + 0.7) * emote.arms * 0.2 : 0;
-  rightArm.rotation.x = playing ? Math.sin(danceBeat * 0.5 - 0.7) * emote.arms * 0.2 : 0;
-  leftLeg.rotation.x = playing ? leftBeat * emote.legs : 0;
-  rightLeg.rotation.x = playing ? -rightBeat * emote.legs : 0;
-  if (selectedEmote === "hype") {
-    leftArm.rotation.z = playing ? -0.88 + Math.sin(danceBeat) * 0.22 : -0.88;
-    rightArm.rotation.z = playing ? 0.88 - Math.sin(danceBeat + Math.PI) * 0.22 : 0.88;
-    character.rotation.z = playing ? Math.sin(danceBeat * 0.5) * 0.025 : 0;
-  } else if (selectedEmote === "robot") {
+  leftArm.rotation.z = isDancing ? -0.12 + leftBeat * emote.arms : 0;
+  rightArm.rotation.z = isDancing ? 0.12 - rightBeat * emote.arms : 0;
+  leftArm.rotation.x = isDancing ? Math.sin(danceBeat * 0.5 + 0.7) * emote.arms * 0.2 : 0;
+  rightArm.rotation.x = isDancing ? Math.sin(danceBeat * 0.5 - 0.7) * emote.arms * 0.2 : 0;
+  leftLeg.rotation.x = isDancing ? leftBeat * emote.legs : 0;
+  rightLeg.rotation.x = isDancing ? -rightBeat * emote.legs : 0;
+  if (!battleOpponent.visible && selectedEmote === "hype") {
+    leftArm.rotation.z = isDancing ? -0.88 + Math.sin(danceBeat) * 0.22 : -0.88;
+    rightArm.rotation.z = isDancing ? 0.88 - Math.sin(danceBeat + Math.PI) * 0.22 : 0.88;
+    character.rotation.z = isDancing ? Math.sin(danceBeat * 0.5) * 0.025 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "robot") {
     const robotPose = Math.floor(danceBeat * 1.5) % 4;
     leftArm.rotation.z = robotPose === 0 || robotPose === 3 ? -0.9 : 0.15;
     rightArm.rotation.z = robotPose === 1 || robotPose === 2 ? 0.9 : -0.15;
     leftArm.rotation.x = robotPose % 2 ? -0.3 : 0.3;
     rightArm.rotation.x = robotPose % 2 ? 0.3 : -0.3;
     character.rotation.z = robotPose % 2 ? 0.035 : -0.035;
-  } else if (selectedEmote === "spin") {
-    leftArm.rotation.z = playing ? -0.08 + leftBeat * 0.16 : 0;
-    rightArm.rotation.z = playing ? 0.08 - rightBeat * 0.16 : 0;
-  } else if (selectedEmote === "side-step") {
-    leftArm.rotation.z = playing ? -0.38 + leftBeat * 0.22 : 0;
-    rightArm.rotation.z = playing ? 0.38 - rightBeat * 0.22 : 0;
-    character.rotation.z = playing ? Math.sin(danceBeat) * 0.09 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "power-pose") {
+    leftArm.rotation.z = isDancing ? -1.05 + Math.sin(danceBeat) * 0.08 : -1.05;
+    rightArm.rotation.z = isDancing ? 1.05 - Math.sin(danceBeat) * 0.08 : 1.05;
+  } else if (!battleOpponent.visible && selectedEmote === "spin") {
+    leftArm.rotation.z = isDancing ? -0.08 + leftBeat * 0.16 : 0;
+    rightArm.rotation.z = isDancing ? 0.08 - rightBeat * 0.16 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "side-step") {
+    leftArm.rotation.z = isDancing ? -0.38 + leftBeat * 0.22 : 0;
+    rightArm.rotation.z = isDancing ? 0.38 - rightBeat * 0.22 : 0;
+    character.rotation.z = isDancing ? Math.sin(danceBeat) * 0.09 : 0;
   } else {
-    character.rotation.z = playing ? Math.sin(danceBeat / 2) * emote.sway : 0;
+    character.rotation.z = isDancing ? Math.sin(danceBeat / 2) * emote.sway : 0;
   }
-  skirt.rotation.z = womanSelected && playing ? Math.sin(danceBeat) * 0.09 : 0;
+  skirt.rotation.z = womanSelected && isDancing ? Math.sin(danceBeat) * 0.09 : 0;
   stageLights.forEach((light, index) => {
     const phase = danceBeat + index * (Math.PI * 2 / stageLights.length);
     light.intensity = 4.5 + Math.max(0, Math.sin(phase)) * 7;
@@ -681,13 +1396,23 @@ function render() {
   });
   partyDancers.forEach(({ group, armA, armB, legA, legB, phase }) => {
     const guestBeat = danceBeat + phase;
-    group.position.y = playing ? Math.abs(Math.sin(guestBeat)) * emote.bounce : 0;
+    group.position.y = isDancing ? Math.abs(Math.sin(guestBeat)) * emote.bounce : 0;
     group.rotation.y += delta * speed * emote.spin * (phase ? -0.7 : 0.7);
-    if (armA) armA.rotation.z = playing ? -0.2 + Math.sin(guestBeat) * emote.arms : 0;
-    if (armB) armB.rotation.z = playing ? 0.2 - Math.sin(guestBeat + 0.8) * emote.arms : 0;
-    if (legA) legA.rotation.x = playing ? Math.sin(guestBeat) * emote.legs : 0;
-    if (legB) legB.rotation.x = playing ? -Math.sin(guestBeat + 0.8) * emote.legs : 0;
+    if (armA) armA.rotation.z = isDancing ? -0.2 + Math.sin(guestBeat) * emote.arms : 0;
+    if (armB) armB.rotation.z = isDancing ? 0.2 - Math.sin(guestBeat + 0.8) * emote.arms : 0;
+    if (legA) legA.rotation.x = isDancing ? Math.sin(guestBeat) * emote.legs : 0;
+    if (legB) legB.rotation.x = isDancing ? -Math.sin(guestBeat + 0.8) * emote.legs : 0;
   });
+  if (battleOpponent.visible) {
+    battleOpponent.position.x = 1.05 - rivalLunge * 0.28;
+    battleOpponent.position.y = 0;
+    battleOpponent.rotation.y = -0.35 + Math.sin(clock.elapsedTime * 0.65) * 0.12;
+    rivalLeftArm.rotation.z = 0;
+    rivalRightArm.rotation.z = 0;
+    rivalLeftLeg.rotation.x = 0;
+    rivalRightLeg.rotation.x = 0;
+    rivalShadow.material.opacity = 0.27 - Math.abs(battleOpponent.position.y) * 0.6;
+  }
   shadow.material.opacity = 0.27 - Math.abs(character.position.y) * 0.6;
   renderer.render(scene, camera);
 }
