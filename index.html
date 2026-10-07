@@ -26,7 +26,7 @@
         <nav class="main-nav" aria-label="Main navigation">
           <a class="nav-link is-current" href="#lobby">PLAY</a>
           <a class="nav-link" href="#controls">LOCKER</a>
-          <a class="nav-link" href="#emotes">EMOTES <span class="nav-count">07</span></a>
+          <a class="nav-link" href="#emotes">EMOTES <span class="nav-count">12</span></a>
         </nav>
         <div class="account-chip"><span class="account-avatar">R</span><span class="account-name">PLAYER ONE<small>LVL 01</small></span><span class="account-chevron">⌄</span></div>
       </header>
@@ -34,7 +34,7 @@
       <section class="story-panel" aria-labelledby="story-title">
         <div class="story-header">
           <div><span class="story-kicker">STORY MODE</span><h2 id="story-title">CITY CIRCUIT</h2></div>
-          <span class="story-chapter" id="story-chapter">BATTLE 1 / 3</span>
+          <span class="story-chapter" id="story-chapter">BATTLE 1 / 23</span>
         </div>
         <div class="story-content">
           <div class="story-rival">
@@ -50,8 +50,8 @@
           <p id="dialogue-line"></p>
         </div>
         <div class="story-progress">
-          <div class="story-progress-label"><span>CAMPAIGN PROGRESS</span><strong id="story-progress-label">0 / 3 WINS</strong></div>
-          <div class="story-progress-track" id="story-progress" role="progressbar" aria-label="Story campaign progress" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+          <div class="story-progress-label"><span>CAMPAIGN PROGRESS</span><strong id="story-progress-label">0 / 23 WINS</strong></div>
+          <div class="story-progress-track" id="story-progress" role="progressbar" aria-label="Story campaign progress" aria-valuemin="0" aria-valuemax="23" aria-valuenow="0">
             <span id="story-progress-fill"></span>
           </div>
         </div>
@@ -110,13 +110,18 @@
             <button type="button" data-quick-emote="robot">03 <span>GLITCH STEP</span></button>
             <button type="button" data-quick-emote="spin">04 <span>ORBIT BREAK</span></button>
             <button type="button" data-quick-emote="side-step">05 <span>CROSSOVER</span></button>
-            <button type="button" data-quick-emote="moonwalk" disabled>06 <span>MOONWALK · 1 WIN</span></button>
-            <button type="button" data-quick-emote="power-pose" disabled>07 <span>POWER POSE · 3 WINS</span></button>
+            <button type="button" data-quick-emote="moonwalk" data-quest="EASY QUEST — Defeat Nova in Battle 1 with Quick Strike as your final blow." aria-disabled="true">06 <span>MOONWALK · QUEST</span></button>
+            <button type="button" data-quick-emote="power-pose" data-quest="HARD QUEST — Defeat Echo in Battle 3 with Finisher as your final blow." aria-disabled="true">07 <span>POWER POSE · QUEST</span></button>
+            <button type="button" data-quick-emote="breakstep" data-quest="MEDIUM QUEST — Defeat Riff in Battle 4 with Finisher as your final blow." aria-disabled="true">08 <span>BREAKSTEP · QUEST</span></button>
+            <button type="button" data-quick-emote="freestyle" data-quest="HARD QUEST — Defeat Tempo in Battle 8 with Finisher as your final blow." aria-disabled="true">09 <span>FREESTYLE · QUEST</span></button>
+            <button type="button" data-quick-emote="toprock" data-quest="HARD QUEST — Defeat Patch in Battle 12 with Finisher as your final blow." aria-disabled="true">10 <span>TOPROCK · QUEST</span></button>
+            <button type="button" data-quick-emote="windmill" data-quest="VERY HARD QUEST — Defeat Onyx in Battle 16 with Finisher as your final blow." aria-disabled="true">11 <span>WINDMILL · QUEST</span></button>
+            <button type="button" data-quick-emote="victory-shuffle" data-quest="VERY HARD QUEST — Defeat the Grandmaster in Battle 23 with Finisher as your final blow." aria-disabled="true">12 <span>VICTORY SHUFFLE · QUEST</span></button>
           </div>
         </div>
 
         <aside class="locker-panel" id="emotes">
-          <div class="locker-heading"><div><p class="eyebrow"><span>YOUR LOCKER</span></p><h2>Emotes <span id="emote-count">05 / 07</span></h2></div><span class="locker-symbol">✦</span></div>
+          <div class="locker-heading"><div><p class="eyebrow"><span>YOUR LOCKER</span></p><h2>Emotes <span id="emote-count">05 / 12</span></h2></div><span class="locker-symbol">✦</span></div>
           <p class="locker-hint">PICK A MOVE TO PREVIEW</p>
           <div class="emote-grid" role="group" aria-label="Choose a dance emote">
             <button class="emote-button is-selected" type="button" data-emote="groove" aria-pressed="true"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M17 32V11l19-4v21M17 17l19-4"/><ellipse cx="12" cy="34" rx="5" ry="3.5" transform="rotate(-22 12 34)"/><ellipse cx="31" cy="30" rx="5" ry="3.5" transform="rotate(-22 31 30)"/><path d="M8 11c2-2 5-2 7 0M11 6c4-3 9-2 12 1"/></svg></span><span class="emote-copy"><span class="emote-name">LOWKEY GROOVE</span><span class="emote-rarity">SIGNATURE • LOOP</span></span><span class="emote-number">01</span></button>
@@ -124,8 +129,13 @@
             <button class="emote-button" type="button" data-emote="robot" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M16 17h16l4 5v13H12V22l4-5Zm8 0v-6m-4 16h.1m8-.1h.1M19 35l-4 7m14-7 4 7M8 24H4m40 0h-4"/><path d="M18 24h4v4h-4zm8 0h4v4h-4z"/></svg></span><span class="emote-copy"><span class="emote-name">GLITCH STEP</span><span class="emote-rarity">SIGNATURE • MECH</span></span><span class="emote-number">03</span></button>
             <button class="emote-button" type="button" data-emote="spin" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M35 18a14 14 0 0 0-24-5L8 16m0-8v8h8m-3 14a14 14 0 0 0 24 5l3-3m0 8v-8h-8"/><circle cx="24" cy="24" r="4"/><path d="M24 17v3m0 8v3m7-7h-3m-8 0h-3"/></svg></span><span class="emote-copy"><span class="emote-name">ORBIT BREAK</span><span class="emote-rarity">SIGNATURE • SPIN</span></span><span class="emote-number">04</span></button>
             <button class="emote-button" type="button" data-emote="side-step" aria-pressed="false"><span class="emote-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M9 17h27l-6-6m6 6-6 6M39 31H12l6 6m-6-6 6-6"/><path d="m17 12-3 5 3 5m14 4 3 5-3 5"/></svg></span><span class="emote-copy"><span class="emote-name">CROSSOVER</span><span class="emote-rarity">SIGNATURE • FOOTWORK</span></span><span class="emote-number">05</span></button>
-            <button class="emote-button is-locked" type="button" data-emote="moonwalk" data-unlock-wins="1" aria-pressed="false" aria-label="Moonwalk emote. Unlock after 1 story win." disabled><span class="emote-icon" aria-hidden="true">☾</span><span class="emote-copy"><span class="emote-name">MOONWALK</span><span class="emote-rarity">UNLOCK: 1 STORY WIN</span></span><span class="emote-number">06</span><span class="emote-lock">LOCKED</span></button>
-            <button class="emote-button is-locked" type="button" data-emote="power-pose" data-unlock-wins="3" aria-pressed="false" aria-label="Power Pose emote. Unlock after 3 story wins." disabled><span class="emote-icon" aria-hidden="true">✦</span><span class="emote-copy"><span class="emote-name">POWER POSE</span><span class="emote-rarity">UNLOCK: 3 STORY WINS</span></span><span class="emote-number">07</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="moonwalk" data-difficulty="EASY" data-quest="EASY QUEST — Defeat Nova in Battle 1 with Quick Strike as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">☾</span><span class="emote-copy"><span class="emote-name">MOONWALK</span><span class="emote-rarity">EASY QUEST</span></span><span class="emote-number">06</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="power-pose" data-difficulty="HARD" data-quest="HARD QUEST — Defeat Echo in Battle 3 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">✦</span><span class="emote-copy"><span class="emote-name">POWER POSE</span><span class="emote-rarity">HARD QUEST</span></span><span class="emote-number">07</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="breakstep" data-difficulty="MEDIUM" data-quest="MEDIUM QUEST — Defeat Riff in Battle 4 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">↗</span><span class="emote-copy"><span class="emote-name">BREAKSTEP</span><span class="emote-rarity">MEDIUM QUEST</span><span class="emote-quest-visible">Defeat Riff in Battle 4 with FINISHER.</span></span><span class="emote-number">08</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="freestyle" data-difficulty="HARD" data-quest="HARD QUEST — Defeat Tempo in Battle 8 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">♫</span><span class="emote-copy"><span class="emote-name">FREESTYLE</span><span class="emote-rarity">HARD QUEST</span><span class="emote-quest-visible">Defeat Tempo in Battle 8 with FINISHER.</span></span><span class="emote-number">09</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="toprock" data-difficulty="HARD" data-quest="HARD QUEST — Defeat Patch in Battle 12 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">◆</span><span class="emote-copy"><span class="emote-name">TOPROCK</span><span class="emote-rarity">HARD QUEST</span><span class="emote-quest-visible">Defeat Patch in Battle 12 with FINISHER.</span></span><span class="emote-number">10</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="windmill" data-difficulty="VERY HARD" data-quest="VERY HARD QUEST — Defeat Onyx in Battle 16 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">⟳</span><span class="emote-copy"><span class="emote-name">WINDMILL</span><span class="emote-rarity">VERY HARD QUEST</span><span class="emote-quest-visible">Defeat Onyx in Battle 16 with FINISHER.</span></span><span class="emote-number">11</span><span class="emote-lock">LOCKED</span></button>
+            <button class="emote-button is-locked" type="button" data-emote="victory-shuffle" data-difficulty="VERY HARD" data-quest="VERY HARD QUEST — Defeat the Grandmaster in Battle 23 with Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="emote-icon" aria-hidden="true">★</span><span class="emote-copy"><span class="emote-name">VICTORY SHUFFLE</span><span class="emote-rarity">VERY HARD QUEST</span><span class="emote-quest-visible">Defeat Grandmaster in Battle 23 with FINISHER.</span></span><span class="emote-number">12</span><span class="emote-lock">LOCKED</span></button>
           </div>
           <div class="equipped-emote"><span class="equipped-check">✓</span><span>EQUIPPED EMOTE<small id="emote-caption">LOWKEY GROOVE</small></span></div>
         </aside>
@@ -154,15 +164,15 @@
         <div class="skin-choice" role="group" aria-label="Choose an unlocked skin">
           <span class="choice-label">UNLOCKABLE OUTFITS</span>
           <button class="skin-button is-selected" type="button" data-skin="original" aria-pressed="true"><span class="skin-swatch skin-original"></span> ORIGINAL</button>
-          <button class="skin-button is-locked" type="button" data-skin="neon" data-unlock-wins="1" aria-pressed="false" disabled><span class="skin-swatch skin-neon"></span> NEON FLARE <small>1 WIN</small><span class="skin-lock">LOCKED</span></button>
-          <button class="skin-button is-locked" type="button" data-skin="wild" data-unlock-wins="2" aria-pressed="false" disabled><span class="skin-swatch skin-wild"></span> WILDSIDE <small>2 WINS</small><span class="skin-lock">LOCKED</span></button>
-          <button class="skin-button is-locked" type="button" data-skin="champion" data-unlock-wins="3" aria-pressed="false" disabled><span class="skin-swatch skin-champion"></span> CIRCUIT CHAMP <small>3 WINS</small><span class="skin-lock">LOCKED</span></button>
+          <button class="skin-button is-locked" type="button" data-skin="neon" data-difficulty="MEDIUM" data-quest="MEDIUM QUEST — Defeat Nova in Battle 1 with Power Hit as your final blow." aria-pressed="false" aria-disabled="true"><span class="skin-swatch skin-neon"></span> NEON FLARE <small>MEDIUM</small><span class="skin-lock">LOCKED</span></button>
+          <button class="skin-button is-locked" type="button" data-skin="wild" data-difficulty="MEDIUM" data-quest="MEDIUM QUEST — Defeat Brick in Battle 2 with Quick Strike as your final blow." aria-pressed="false" aria-disabled="true"><span class="skin-swatch skin-wild"></span> WILDSIDE <small>MEDIUM</small><span class="skin-lock">LOCKED</span></button>
+          <button class="skin-button is-locked" type="button" data-skin="champion" data-difficulty="HARD" data-quest="HARD QUEST — Defeat Echo in Battle 3 with Power Hit as your final blow." aria-pressed="false" aria-disabled="true"><span class="skin-swatch skin-champion"></span> CIRCUIT CHAMP <small>HARD</small><span class="skin-lock">LOCKED</span></button>
         </div>
         <div class="hat-choice" role="group" aria-label="Unlock and equip hats">
           <span class="choice-label">STORY-ONLY HATS</span>
-          <button class="hat-button is-locked" type="button" data-hat="street-cap" data-unlock-wins="1" aria-pressed="false" aria-label="Street Cap. Unlock after 1 story win." disabled><span class="hat-swatch hat-cap"></span> STREET CAP <small>1 WIN</small><span class="hat-lock">LOCKED</span></button>
-          <button class="hat-button is-locked" type="button" data-hat="groove-beanie" data-unlock-wins="2" aria-pressed="false" aria-label="Groove Beanie. Unlock after 2 story wins." disabled><span class="hat-swatch hat-beanie"></span> GROOVE BEANIE <small>2 WINS</small><span class="hat-lock">LOCKED</span></button>
-          <button class="hat-button is-locked" type="button" data-hat="circuit-crown" data-unlock-wins="3" aria-pressed="false" aria-label="Circuit Crown. Unlock after 3 story wins." disabled><span class="hat-swatch hat-crown"></span> CIRCUIT CROWN <small>3 WINS</small><span class="hat-lock">LOCKED</span></button>
+          <button class="hat-button is-locked" type="button" data-hat="street-cap" data-difficulty="EASY" data-quest="EASY QUEST — Defeat Nova in Battle 1 of the City Circuit." aria-pressed="false" aria-disabled="true"><span class="hat-swatch hat-cap"></span> STREET CAP <small>EASY</small><span class="hat-lock">LOCKED</span></button>
+          <button class="hat-button is-locked" type="button" data-hat="groove-beanie" data-difficulty="MEDIUM" data-quest="MEDIUM QUEST — Defeat Brick in Battle 2 with Power Hit or Finisher as your final blow." aria-pressed="false" aria-disabled="true"><span class="hat-swatch hat-beanie"></span> GROOVE BEANIE <small>MEDIUM</small><span class="hat-lock">LOCKED</span></button>
+          <button class="hat-button is-locked" type="button" data-hat="circuit-crown" data-difficulty="HARD" data-quest="HARD QUEST — Defeat Echo, the final City Circuit champion, in Battle 3." aria-pressed="false" aria-disabled="true"><span class="hat-swatch hat-crown"></span> CIRCUIT CROWN <small>HARD</small><span class="hat-lock">LOCKED</span></button>
         </div>
       </section>
 

@@ -606,9 +606,52 @@ character.add(circuitCrown);
 hatGroups.forEach((hat) => { hat.visible = false; });
 
 const storyOpponents = [
-  { name: "NOVA “NEON”", description: "A rooftop regular with quick strikes. Defeat Nova to earn your first City Circuit win.", jacket: 0xb84768, pants: 0x30283f, hair: 0x17182d, skin: 0xb87862, female: true, health: 240, damage: 18, taunt: "Too slow! Watch this!", hitLine: "Ow! You got that one." },
-  { name: "BRICK “BASSLINE”", description: "A warehouse powerhouse who hits hard. Take Brick down to reach the final challenger.", jacket: 0x397b84, pants: 0x253b42, hair: 0x32241f, skin: 0x855b48, female: false, health: 275, damage: 24, taunt: "Feel the bass drop!", hitLine: "Didn't expect that move." },
-  { name: "ECHO “AFTERGLOW”", description: "The circuit champion has the strongest counterattack. Beat Echo to finish the story.", jacket: 0x9b7040, pants: 0x46344d, hair: 0x39223f, skin: 0xc68d6e, female: true, health: 310, damage: 29, taunt: "The spotlight's mine!", hitLine: "Okay, you're for real." }
+  { name: "NOVA “NEON”", description: "A rooftop regular with quick strikes. Defeat Nova to enter the City Circuit.", jacket: 0xb84768, pants: 0x30283f, hair: 0x17182d, skin: 0xb87862, female: true, health: 240, damage: 18, taunt: "Too slow! Watch this!", hitLine: "Ow! You got that one." },
+  { name: "BRICK “BASSLINE”", description: "A warehouse powerhouse who hits hard. Take Brick down to keep climbing.", jacket: 0x397b84, pants: 0x253b42, hair: 0x32241f, skin: 0x855b48, female: false, health: 275, damage: 24, taunt: "Feel the bass drop!", hitLine: "Didn't expect that move." },
+  { name: "ECHO “AFTERGLOW”", description: "A former circuit champion with a punishing counterattack.", jacket: 0x9b7040, pants: 0x46344d, hair: 0x39223f, skin: 0xc68d6e, female: true, health: 310, damage: 29, taunt: "The spotlight's mine!", hitLine: "Okay, you're for real." },
+  ...[
+    ["RIFF “SIDECHAIN”", "A club regular who turns every opening into a sharp beat."],
+    ["JUNO “JACKPOT”", "A fearless street dancer with a lucky streak and quick hands."],
+    ["MOSS “LOWKEY”", "A calm park-session veteran who never wastes a move."],
+    ["GLINT “GLASSHOUSE”", "A rooftop stylist whose polished combos still pack a punch."],
+    ["TEMPO “UPBEAT”", "A metronome-precise battler who never loses the rhythm."],
+    ["ASH “CINDER”", "A late-night challenger bringing heat from the underground."],
+    ["FLUX “SWITCHUP”", "A tricky rival who changes tactics the moment you settle in."],
+    ["VORTEX “WHIRLWIND”", "A spinning specialist who presses every advantage."],
+    ["PATCH “SCRATCH”", "A turntable ace with a rough, relentless battle style."],
+    ["LUX “SPOTLIGHT”", "A showstopper who fights like every round is a finale."],
+    ["KITE “UPDRAFT”", "A light-footed contender with surprisingly heavy counters."],
+    ["KINETIC “MOTION”", "A powerhouse in constant motion who is tough to slow down."],
+    ["ONYX “NIGHTSHIFT”", "A midnight circuit regular with a cool head and hard hits."],
+    ["BLAZE “AFTERBURN”", "A fiery competitor who ramps up the pressure each round."],
+    ["RUNE “RHYTHMLOCK”", "A technical master who makes every counter count."],
+    ["SABLE “MOONRISE”", "A smooth night dancer with a sharp finishing game."],
+    ["PULSE “HEARTBEAT”", "A crowd favorite who gets stronger as the music builds."],
+    ["DRIFT “LAST LAP”", "A road-tested rival saving their best move for the end."],
+    ["METRO “NIGHTLINE”", "A city-circuit veteran who turns the final stretch into a sprint."],
+    ["GRANDMASTER “HEADLINER”", "The final challenger: City Circuit legend and reigning Grandmaster."]
+  ].map(([name, description], index) => {
+    const palettes = [
+      [0x397b84, 0x253b42, 0x32241f, 0x855b48],
+      [0xb84768, 0x30283f, 0x17182d, 0xb87862],
+      [0x9b7040, 0x46344d, 0x39223f, 0xc68d6e],
+      [0x6d56b8, 0x272a47, 0x1d1b34, 0xc18d70],
+      [0x3f8b5b, 0x46362b, 0x38271a, 0x855b48]
+    ][index % 5];
+    return {
+      name,
+      description,
+      jacket: palettes[0],
+      pants: palettes[1],
+      hair: palettes[2],
+      skin: palettes[3],
+      female: index % 2 === 1,
+      health: 300 + index * 4,
+      damage: 20 + Math.floor(index / 5),
+      taunt: ["Catch the next beat!", "You can't keep up!", "Now it's my turn!", "Let's raise the tempo!"][index % 4],
+      hitLine: ["Nice move!", "Okay, that landed.", "You're full of surprises."][index % 3]
+    };
+  })
 ];
 const battleOpponent = character.clone(true);
 battleOpponent.name = "storyOpponent";
@@ -699,8 +742,47 @@ let selectedSkin = "original";
 const unlockStorageKey = "roundabout-story-unlocks-v1";
 const unlockedEmotes = new Set(["groove", "hype", "robot", "spin", "side-step", ...loadUnlocks("emotes")]);
 const unlockedSkins = new Set(["original", ...loadUnlocks("skins")]);
-const unlockedHats = new Set(loadUnlocks("hats"));
+const unlockedHats = new Set(loadUnlocks("hatQuestUnlocks"));
+const hatDisplayNames = {
+  "street-cap": "Street Cap",
+  "groove-beanie": "Groove Beanie",
+  "circuit-crown": "Circuit Crown"
+};
+const rewardQuestNames = {
+  moonwalk: "Moonwalk emote",
+  "power-pose": "Power Pose emote",
+  breakstep: "Breakstep emote",
+  freestyle: "Freestyle emote",
+  toprock: "Toprock emote",
+  windmill: "Windmill emote",
+  "victory-shuffle": "Victory Shuffle emote",
+  neon: "Neon Flare outfit",
+  wild: "Wildside outfit",
+  champion: "Circuit Champ outfit",
+  ...hatDisplayNames
+};
+const rewardDisplayNames = {
+  neon: "Neon Flare outfit",
+  wild: "Wildside outfit",
+  champion: "Circuit Champ outfit"
+};
+const rewardQuestItems = [
+  { type: "emote", id: "moonwalk", opponent: 0, attack: "Quick Strike" },
+  { type: "emote", id: "power-pose", opponent: 2, attack: "Finisher" },
+  { type: "emote", id: "breakstep", opponent: 3, attack: "Finisher" },
+  { type: "emote", id: "freestyle", opponent: 7, attack: "Finisher" },
+  { type: "emote", id: "toprock", opponent: 11, attack: "Finisher" },
+  { type: "emote", id: "windmill", opponent: 15, attack: "Finisher" },
+  { type: "emote", id: "victory-shuffle", opponent: 22, attack: "Finisher" },
+  { type: "skin", id: "neon", opponent: 0, attack: "Power Hit" },
+  { type: "skin", id: "wild", opponent: 1, attack: "Quick Strike" },
+  { type: "skin", id: "champion", opponent: 2, attack: "Power Hit" },
+  { type: "hat", id: "street-cap", opponent: 0 },
+  { type: "hat", id: "groove-beanie", opponent: 1, attacks: ["Power Hit", "Finisher"] },
+  { type: "hat", id: "circuit-crown", opponent: 2 }
+];
 let selectedHat = null;
+let lastPlayerAttack = "";
 let musicContext;
 let beatTimer;
 const clock = new THREE.Clock();
@@ -711,7 +793,12 @@ const emotes = {
   spin: { label: "ORBIT BREAK", beat: 1.8, spin: 1.8, bounce: 0.05, arms: 0.18, legs: 0.16, sway: 0.035 },
   "side-step": { label: "CROSSOVER", beat: 2.4, spin: 0.08, bounce: 0.035, arms: 0.22, legs: 0.38, sway: 0.09 },
   moonwalk: { label: "MOONWALK", beat: 1.8, spin: 0.02, bounce: 0.012, arms: 0.16, legs: 0.48, sway: 0.025 },
-  "power-pose": { label: "POWER POSE", beat: 1.6, spin: 0.04, bounce: 0.055, arms: 0.2, legs: 0.12, sway: 0.018 }
+  "power-pose": { label: "POWER POSE", beat: 1.6, spin: 0.04, bounce: 0.055, arms: 0.2, legs: 0.12, sway: 0.018 },
+  breakstep: { label: "BREAKSTEP", beat: 2.1, spin: 0.24, bounce: 0.055, arms: 0.56, legs: 0.62, sway: 0.09 },
+  freestyle: { label: "FREESTYLE", beat: 2.65, spin: 0.44, bounce: 0.065, arms: 0.62, legs: 0.4, sway: 0.075 },
+  toprock: { label: "TOPROCK", beat: 2.2, spin: 0.58, bounce: 0.04, arms: 0.5, legs: 0.54, sway: 0.065 },
+  windmill: { label: "WINDMILL", beat: 1.65, spin: 1.15, bounce: 0.035, arms: 0.72, legs: 0.3, sway: 0.035 },
+  "victory-shuffle": { label: "VICTORY SHUFFLE", beat: 2.85, spin: 0.18, bounce: 0.08, arms: 0.38, legs: 0.65, sway: 0.1 }
 };
 
 function loadUnlocks(key) {
@@ -729,7 +816,7 @@ function saveUnlocks() {
     window.localStorage.setItem(unlockStorageKey, JSON.stringify({
       emotes: [...unlockedEmotes],
       skins: [...unlockedSkins],
-      hats: [...unlockedHats]
+      hatQuestUnlocks: [...unlockedHats]
     }));
   } catch (error) {
     console.error("Unable to save story unlocks:", error);
@@ -741,28 +828,43 @@ function updateUnlockControls() {
   emoteButtons.forEach((button) => {
     const id = button.dataset.emote;
     const isUnlocked = unlockedEmotes.has(id);
-    button.disabled = !isUnlocked;
+    button.disabled = false;
+    button.setAttribute("aria-disabled", String(!isUnlocked));
     button.classList.toggle("is-locked", !isUnlocked);
     if (isUnlocked) emoteUnlockedCount += 1;
     button.querySelector(".emote-lock")?.toggleAttribute("hidden", isUnlocked);
+    if (button.dataset.quest) {
+      button.setAttribute("aria-label", `${button.querySelector(".emote-name").textContent}. ${button.dataset.difficulty} difficulty. ${isUnlocked ? "Unlocked." : button.dataset.quest}`);
+      button.title = isUnlocked ? "" : button.dataset.quest;
+    }
   });
   emoteCount.textContent = `${emoteUnlockedCount} / ${emoteButtons.length}`;
   skinButtons.forEach((button) => {
     const isUnlocked = unlockedSkins.has(button.dataset.skin);
-    button.disabled = !isUnlocked;
+    button.disabled = false;
+    button.setAttribute("aria-disabled", String(!isUnlocked));
     button.classList.toggle("is-locked", !isUnlocked);
     button.querySelector(".skin-lock")?.toggleAttribute("hidden", isUnlocked);
+    if (button.dataset.quest) {
+      button.setAttribute("aria-label", `${rewardDisplayNames[button.dataset.skin]}. ${button.dataset.difficulty} difficulty. ${isUnlocked ? "Unlocked." : button.dataset.quest}`);
+      button.title = isUnlocked ? "" : button.dataset.quest;
+    }
   });
   hatButtons.forEach((button) => {
     const isUnlocked = unlockedHats.has(button.dataset.hat);
-    button.disabled = !isUnlocked;
+    button.disabled = false;
+    button.setAttribute("aria-disabled", String(!isUnlocked));
     button.classList.toggle("is-locked", !isUnlocked);
     button.classList.toggle("is-selected", selectedHat === button.dataset.hat);
     button.setAttribute("aria-pressed", String(selectedHat === button.dataset.hat));
     button.querySelector(".hat-lock")?.toggleAttribute("hidden", isUnlocked);
+    button.setAttribute("aria-label", `${hatDisplayNames[button.dataset.hat]}. ${button.dataset.difficulty} difficulty. ${isUnlocked ? "Unlocked; click to equip." : button.dataset.quest}`);
   });
   document.querySelectorAll("[data-quick-emote]").forEach((button) => {
-    button.disabled = !unlockedEmotes.has(button.dataset.quickEmote);
+    const isUnlocked = unlockedEmotes.has(button.dataset.quickEmote);
+    button.disabled = false;
+    button.setAttribute("aria-disabled", String(!isUnlocked));
+    if (button.dataset.quest) button.title = isUnlocked ? "" : button.dataset.quest;
   });
 }
 
@@ -775,29 +877,19 @@ function updateCampaignProgress() {
   storyProgressFill.style.width = `${progress}%`;
 }
 
-function unlockCampaignRewards() {
+function completeRewardQuests(defeatedOpponent, finalAttack) {
   const newlyUnlocked = [];
-  const rewards = [
-    { wins: 1, emote: "moonwalk", skin: "neon", hat: "street-cap", label: "Neon Flare outfit, Moonwalk emote, and Street Cap" },
-    { wins: 2, skin: "wild", hat: "groove-beanie", label: "Wildside outfit and Groove Beanie" },
-    { wins: 3, emote: "power-pose", skin: "champion", hat: "circuit-crown", label: "Circuit Champ outfit, Power Pose emote, and Circuit Crown" }
-  ];
-  rewards.forEach((reward) => {
-    if (campaignWins < reward.wins) return;
-    let unlocked = false;
-    if (reward.emote && !unlockedEmotes.has(reward.emote)) {
-      unlockedEmotes.add(reward.emote);
-      unlocked = true;
-    }
-    if (reward.skin && !unlockedSkins.has(reward.skin)) {
-      unlockedSkins.add(reward.skin);
-      unlocked = true;
-    }
-    if (reward.hat && !unlockedHats.has(reward.hat)) {
-      unlockedHats.add(reward.hat);
-      unlocked = true;
-    }
-    if (unlocked) newlyUnlocked.push(reward.label);
+  rewardQuestItems.forEach((quest) => {
+    const attackMatches = quest.attack
+      ? finalAttack === quest.attack
+      : !quest.attacks || quest.attacks.includes(finalAttack);
+    if (quest.opponent !== defeatedOpponent || !attackMatches) return;
+    const unlockedItems = quest.type === "emote"
+      ? unlockedEmotes
+      : quest.type === "skin" ? unlockedSkins : unlockedHats;
+    if (unlockedItems.has(quest.id)) return;
+    unlockedItems.add(quest.id);
+    newlyUnlocked.push(rewardQuestNames[quest.id]);
   });
   if (newlyUnlocked.length) {
     updateUnlockControls();
@@ -874,6 +966,7 @@ function beginStoryBattle(index) {
     battleTurnTimer = undefined;
   }
   storyState = "active";
+  lastPlayerAttack = "";
   playerHealth = playerMaximumHealth;
   rivalHealth = storyOpponents[index].health;
   playerStamina = maximumStamina;
@@ -918,15 +1011,16 @@ function finishStoryBattle(won) {
   }
 
   setBattleDialogue("YOU", "That's the City Circuit style!");
+  const defeatedOpponentIndex = campaignWins;
   campaignWins += 1;
   updateCampaignProgress();
-  const rewards = unlockCampaignRewards();
+  const rewards = completeRewardQuests(defeatedOpponentIndex, lastPlayerAttack);
   if (campaignWins === storyOpponents.length) {
     storyState = "complete";
     storyRivalLabel.textContent = "CHAMPION";
     storyChapter.textContent = "CIRCUIT CLEARED";
     storyStatus.textContent = "You defeated every challenger and cleared the City Circuit!";
-    setBattleDialogue("ECHO “AFTERGLOW”", "You earned that win. The circuit is yours.");
+    setBattleDialogue(storyOpponents[defeatedOpponentIndex].name, "You earned that win. The circuit is yours.");
     storyAction.textContent = "REPLAY STORY";
   } else {
     storyState = "won";
@@ -944,6 +1038,7 @@ function performAttack(button) {
   const staminaCost = Number(button.dataset.stamina);
   if (playerStamina < staminaCost) return;
   const attackName = button.dataset.attack;
+  lastPlayerAttack = attackName;
   const opponent = storyOpponents[campaignWins];
   playerStamina -= staminaCost;
   attackButtons.forEach((attackButton) => { attackButton.disabled = true; });
@@ -1169,6 +1264,7 @@ emoteButtons.forEach((button) => {
 });
 document.querySelectorAll("[data-quick-emote]").forEach((button) => {
   button.addEventListener("click", () => {
+    if (!unlockedEmotes.has(button.dataset.quickEmote)) return;
     selectEmote(button.dataset.quickEmote);
     quickEmoteMenu.hidden = true;
     quickEmoteToggle.setAttribute("aria-expanded", "false");
@@ -1352,6 +1448,8 @@ function render() {
     ? Math.sin(danceBeat) * 0.12
     : isDancing && selectedEmote === "moonwalk"
       ? Math.sin(danceBeat * 0.5) * 0.24
+      : isDancing && ["breakstep", "toprock", "victory-shuffle"].includes(selectedEmote)
+        ? Math.sin(danceBeat * (selectedEmote === "victory-shuffle" ? 1.5 : 1)) * (selectedEmote === "toprock" ? 0.18 : 0.14)
       : 0;
   character.position.x = (battleOpponent.visible ? -1.05 + playerLunge * 0.28 : 0) + emoteSlide;
   character.rotation.z = isDancing ? Math.sin(danceBeat / 2) * emote.sway : 0;
@@ -1384,6 +1482,36 @@ function render() {
     leftArm.rotation.z = isDancing ? -0.38 + leftBeat * 0.22 : 0;
     rightArm.rotation.z = isDancing ? 0.38 - rightBeat * 0.22 : 0;
     character.rotation.z = isDancing ? Math.sin(danceBeat) * 0.09 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "breakstep") {
+    leftArm.rotation.z = isDancing ? -0.82 + Math.sin(danceBeat * 1.4) * 0.3 : -0.82;
+    rightArm.rotation.z = isDancing ? 0.42 - Math.sin(danceBeat * 1.4 + 1) * 0.36 : 0.42;
+    leftLeg.rotation.x = isDancing ? Math.sin(danceBeat * 1.5) * 0.72 : 0;
+    rightLeg.rotation.x = isDancing ? -Math.cos(danceBeat * 1.5) * 0.65 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "freestyle") {
+    leftArm.rotation.z = isDancing ? -0.35 - Math.sin(danceBeat * 0.7) * 0.62 : 0;
+    rightArm.rotation.z = isDancing ? 0.35 + Math.cos(danceBeat * 0.7) * 0.62 : 0;
+    leftArm.rotation.x = isDancing ? Math.sin(danceBeat) * 0.42 : 0;
+    rightArm.rotation.x = isDancing ? -Math.sin(danceBeat + 1) * 0.42 : 0;
+    character.rotation.z = isDancing ? Math.sin(danceBeat * 0.5) * 0.12 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "toprock") {
+    leftArm.rotation.z = isDancing ? -0.62 + leftBeat * 0.34 : 0;
+    rightArm.rotation.z = isDancing ? 0.62 - rightBeat * 0.34 : 0;
+    leftLeg.rotation.x = isDancing ? leftBeat * 0.68 : 0;
+    rightLeg.rotation.x = isDancing ? -rightBeat * 0.68 : 0;
+    character.rotation.z = isDancing ? Math.sin(danceBeat) * 0.14 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "windmill") {
+    leftArm.rotation.z = isDancing ? -0.45 - Math.sin(danceBeat * 1.7) * 0.8 : -0.45;
+    rightArm.rotation.z = isDancing ? 0.45 + Math.sin(danceBeat * 1.7 + Math.PI) * 0.8 : 0.45;
+    leftArm.rotation.x = isDancing ? Math.cos(danceBeat * 1.7) * 0.62 : 0;
+    rightArm.rotation.x = isDancing ? -Math.cos(danceBeat * 1.7) * 0.62 : 0;
+    leftLeg.rotation.x = isDancing ? leftBeat * 0.42 : 0;
+    rightLeg.rotation.x = isDancing ? -rightBeat * 0.42 : 0;
+  } else if (!battleOpponent.visible && selectedEmote === "victory-shuffle") {
+    leftArm.rotation.z = isDancing ? -0.48 + Math.sin(danceBeat * 1.5) * 0.25 : 0;
+    rightArm.rotation.z = isDancing ? 0.48 - Math.sin(danceBeat * 1.5 + Math.PI) * 0.25 : 0;
+    leftLeg.rotation.x = isDancing ? Math.sin(danceBeat * 1.5) * 0.82 : 0;
+    rightLeg.rotation.x = isDancing ? -Math.sin(danceBeat * 1.5 + Math.PI) * 0.82 : 0;
+    character.rotation.z = isDancing ? Math.sin(danceBeat * 0.75) * 0.1 : 0;
   } else {
     character.rotation.z = isDancing ? Math.sin(danceBeat / 2) * emote.sway : 0;
   }
