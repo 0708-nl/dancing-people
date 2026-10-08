@@ -184,7 +184,16 @@
           <label class="studio-field"><span>STAGE MIX</span><select id="track-select"><option value="pulse">NIGHT PULSE</option><option value="arcade">ARCADE RUN</option><option value="chill">AFTER HOURS</option></select></label>
           <button class="studio-action" id="music-toggle" type="button" aria-pressed="false"><span class="music-indicator"></span><span id="music-label">START BEAT</span><small>GENERATED AUDIO</small></button>
           <label class="studio-field artist-field"><span>ARTIST TAG</span><input id="artist-name" type="text" maxlength="16" value="PLAYER ONE" autocomplete="off" /></label>
-          <label class="studio-field color-field"><span>HAIR COLOR</span><input id="hair-color" type="color" value="#30251e" aria-label="Hair color" /></label>
+          <label class="studio-field color-field"><span>HAIR COLOR</span><input id="hair-color" type="color" value="#5b382c" aria-label="Hair color" />
+            <div class="hair-palette" role="group" aria-label="Unlockable hair colors">
+              <button class="hair-button" type="button" data-hair-id="black" data-hair-value="#111111" style="--hair-color:#111111" aria-label="Black hair" aria-pressed="false" title="Black"></button>
+              <button class="hair-button is-selected" type="button" data-hair-id="brown" data-hair-value="#5b382c" style="--hair-color:#5b382c" aria-label="Brown hair" aria-pressed="true" title="Brown"></button>
+              <button class="hair-button" type="button" data-hair-id="blonde" data-hair-value="#d3b46d" style="--hair-color:#d3b46d" aria-label="Blonde hair" aria-pressed="false" title="Blonde"></button>
+              <button class="hair-button is-locked" type="button" data-hair-id="copper" data-hair-value="#a25d48" style="--hair-color:#a25d48" aria-label="Copper hair (locked)" aria-pressed="false" aria-disabled="true" title="Locked"></button>
+              <button class="hair-button is-locked" type="button" data-hair-id="teal" data-hair-value="#5e9cab" style="--hair-color:#5e9cab" aria-label="Teal hair (locked)" aria-pressed="false" aria-disabled="true" title="Locked"></button>
+              <button class="hair-button is-locked" type="button" data-hair-id="rose" data-hair-value="#c97aa1" style="--hair-color:#c97aa1" aria-label="Rose hair (locked)" aria-pressed="false" aria-disabled="true" title="Locked"></button>
+            </div>
+          </label>
           <label class="studio-field color-field"><span>FIT COLOR</span><input id="fit-color" type="color" value="#63754f" aria-label="Outfit color" /></label>
           <button class="studio-action" id="pose-toggle" type="button" aria-pressed="false">POSE MODE<small>PAUSE & ROTATE</small></button>
           <button class="studio-action" id="party-toggle" type="button" aria-pressed="false">PARTY MODE<small>ADD DANCERS</small></button>

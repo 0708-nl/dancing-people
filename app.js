@@ -28,6 +28,7 @@ const musicToggle = document.querySelector("#music-toggle");
 const musicLabel = document.querySelector("#music-label");
 const artistName = document.querySelector("#artist-name");
 const hairColor = document.querySelector("#hair-color");
+const hairButtons = document.querySelectorAll(".hair-button");
 const fitColor = document.querySelector("#fit-color");
 const poseToggle = document.querySelector("#pose-toggle");
 const partyToggle = document.querySelector("#party-toggle");
@@ -740,6 +741,15 @@ let playerLunge = 0;
 let rivalLunge = 0;
 let selectedSkin = "original";
 const unlockStorageKey = "roundabout-story-unlocks-v1";
+const hairColorOptions = {
+  black: { label: "Black", value: "#111111" },
+  brown: { label: "Brown", value: "#5b382c" },
+  blonde: { label: "Blonde", value: "#d3b46d" },
+  copper: { label: "Copper", value: "#a25d48" },
+  teal: { label: "Teal", value: "#5e9cab" },
+  rose: { label: "Rose", value: "#c97aa1" }
+};
+const unlockedHairColors = new Set(["black", "brown", "blonde", ...loadUnlocks("hairColors")]);
 const unlockedEmotes = new Set(["groove", "hype", "robot", "spin", "side-step", ...loadUnlocks("emotes")]);
 const unlockedSkins = new Set(["original", ...loadUnlocks("skins")]);
 const unlockedHats = new Set(loadUnlocks("hatQuestUnlocks"));
@@ -748,6 +758,9 @@ const hatDisplayNames = {
   "groove-beanie": "Groove Beanie",
   "circuit-crown": "Circuit Crown"
 };
+const hairDisplayNames = Object.fromEntries(
+  Object.entries(hairColorOptions).map(([key, value]) => [key, value.label])
+);
 const rewardQuestNames = {
   moonwalk: "Moonwalk emote",
   "power-pose": "Power Pose emote",
@@ -759,6 +772,7 @@ const rewardQuestNames = {
   neon: "Neon Flare outfit",
   wild: "Wildside outfit",
   champion: "Circuit Champ outfit",
+  ...hairDisplayNames,
   ...hatDisplayNames
 };
 const rewardDisplayNames = {
@@ -777,6 +791,9 @@ const rewardQuestItems = [
   { type: "skin", id: "neon", opponent: 0, attack: "Power Hit" },
   { type: "skin", id: "wild", opponent: 1, attack: "Quick Strike" },
   { type: "skin", id: "champion", opponent: 2, attack: "Power Hit" },
+  { type: "hair", id: "copper", opponent: 0, attack: "Quick Strike" },
+  { type: "hair", id: "teal", opponent: 1, attack: "Power Hit" },
+  { type: "hair", id: "rose", opponent: 2, attack: "Finisher" },
   { type: "hat", id: "street-cap", opponent: 0 },
   { type: "hat", id: "groove-beanie", opponent: 1, attacks: ["Power Hit", "Finisher"] },
   { type: "hat", id: "circuit-crown", opponent: 2 }
@@ -816,11 +833,27 @@ function saveUnlocks() {
     window.localStorage.setItem(unlockStorageKey, JSON.stringify({
       emotes: [...unlockedEmotes],
       skins: [...unlockedSkins],
+      hairColors: [...unlockedHairColors],
       hatQuestUnlocks: [...unlockedHats]
     }));
   } catch (error) {
     console.error("Unable to save story unlocks:", error);
   }
+}
+
+function syncHairButtonSelection(colorHex) {
+  const normalized = colorHex.toLowerCase();
+  hairButtons.forEach((button) => {
+    const option = hairColorOptions[button.dataset.hairId];
+    const isSelected = option ? option.value.toLowerCase() === normalized : false;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+}
+
+function ensureDefaultHairUnlocks() {
+  ["black", "brown", "blonde"].forEach((hairId) => unlockedHairColors.add(hairId));
+  saveUnlocks();
 }
 
 function updateUnlockControls() {
@@ -860,6 +893,19 @@ function updateUnlockControls() {
     button.querySelector(".hat-lock")?.toggleAttribute("hidden", isUnlocked);
     button.setAttribute("aria-label", `${hatDisplayNames[button.dataset.hat]}. ${button.dataset.difficulty} difficulty. ${isUnlocked ? "Unlocked; click to equip." : button.dataset.quest}`);
   });
+  hairButtons.forEach((button) => {
+    const hairId = button.dataset.hairId;
+    const option = hairColorOptions[hairId];
+    const isUnlocked = option ? unlockedHairColors.has(hairId) : false;
+    button.disabled = false;
+    button.setAttribute("aria-disabled", String(!isUnlocked));
+    button.classList.toggle("is-locked", !isUnlocked);
+    button.classList.toggle("is-selected", hairColor && option ? hairColor.value.toLowerCase() === option.value.toLowerCase() : false);
+    if (option) {
+      button.setAttribute("aria-label", `${option.label} hair. ${isUnlocked ? "Unlocked; click to equip." : "Locked until you complete a story quest."}`);
+      button.title = isUnlocked ? option.label : `Locked: finish a story quest to unlock ${option.label.toLowerCase()} hair.`;
+    }
+  });
   document.querySelectorAll("[data-quick-emote]").forEach((button) => {
     const isUnlocked = unlockedEmotes.has(button.dataset.quickEmote);
     button.disabled = false;
@@ -868,6 +914,7 @@ function updateUnlockControls() {
   });
 }
 
+ensureDefaultHairUnlocks();
 updateUnlockControls();
 
 function updateCampaignProgress() {
@@ -886,7 +933,11 @@ function completeRewardQuests(defeatedOpponent, finalAttack) {
     if (quest.opponent !== defeatedOpponent || !attackMatches) return;
     const unlockedItems = quest.type === "emote"
       ? unlockedEmotes
-      : quest.type === "skin" ? unlockedSkins : unlockedHats;
+      : quest.type === "skin"
+        ? unlockedSkins
+        : quest.type === "hair"
+          ? unlockedHairColors
+          : unlockedHats;
     if (unlockedItems.has(quest.id)) return;
     unlockedItems.add(quest.id);
     newlyUnlocked.push(rewardQuestNames[quest.id]);
@@ -1380,6 +1431,18 @@ artistName.addEventListener("input", () => {
 
 hairColor?.addEventListener("input", () => {
   setHairColor(hairColor.value);
+  syncHairButtonSelection(hairColor.value);
+});
+
+hairButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const hairId = button.dataset.hairId;
+    const option = hairColorOptions[hairId];
+    if (!option || !unlockedHairColors.has(hairId)) return;
+    hairColor.value = option.value;
+    setHairColor(option.value);
+    syncHairButtonSelection(option.value);
+  });
 });
 
 fitColor.addEventListener("input", () => {
